@@ -22,6 +22,8 @@ check( htmls(".'center'"), "<div class='center'>" );
 check( htmls(".'center' : special"), "<span class='center'>special</span>" );
 check( htmls(".'center bold' : special"), "<span class='center bold'>special</span>" );
 
+check( htmls('.img alt( a minor issue )'), "<img alt='a minor issue'>" );
+
 check( htmls('  ...foo'), '  </foo><foo>' );
 
 report();

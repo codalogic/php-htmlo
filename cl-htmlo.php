@@ -69,10 +69,8 @@ class Htmlo
 		$class = $this->find_class( $segments );
 		if( $class != '' )
 			$output .= " class=$class";
-		if( $segments[1] == 'a' )
-			$output .= $this->address_args( $segments );
-		else if( $segments[1] == 'img' )
-			$output .= $this->img_args( $segments );
+		$output .= $this->tag_specific_args( $segments );
+		$output .= $this->named_args( $segments );
 		$output .= '>';
 		if( $this->has_content( $segments ) ) {
 			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[1] . '>';
@@ -99,7 +97,6 @@ class Htmlo
         }
 		if( $this->peel( $segments, $line, ':' ) )
             $segments[] = ltrim( $line );
-			print_r( $segments );
 		return $segments;
     }
 
@@ -115,11 +112,69 @@ class Htmlo
 		return False;
     }
 
+    private function tag_specific_args( &$segments )
+    {
+		if( $segments[1] == 'a' )
+			return $this->address_args( $segments );
+		else if( $segments[1] == 'img' )
+			return $this->img_args( $segments );
+		return '';
+    }
+
+    private function address_args( &$segments )
+    {
+		return '';
+    }
+
+    private function img_args( &$segments )
+    {
+		return '';
+    }
+
+    private function named_args( &$segments )
+    {
+		$output = '';
+		print_r( $segments );
+		for( $i=0; count( $arg = $this->find_named( $segments, $i ) ) > 0; ++$i ) {
+			print_r( $arg );
+			$output .= " {$arg[0]}='{$arg[1]}'";
+		}
+		return $output;
+    }
+
     private function find_class( &$segments )
     {
+		return $this->find_item( $segments, self::CSSCLASS );
+    }
+
+    private function find_token( &$segments, $index = 0 )
+    {
+		return $this->find_item( $segments, self::TOKEN, $index );
+    }
+
+    private function find_number( &$segments, $index = 0 )
+    {
+		return $this->find_item( $segments, self::NUMBER, $index );
+    }
+
+    private function find_named( &$segments, $index = 0 )
+    {
+		$named = $this->find_item( $segments, self::NAMED, $index );
+		if( $named != '' && preg_match( '/(\w+)\s*\(([^\)]*)\)/', $named, $matches ) ) {
+			return array( $matches[1], trim( $matches[2] ) );
+		}
+		return array();
+    }
+
+    private function find_item( &$segments, $what, $index = 0 )
+    {
 		for( $i=0; $i<count( $segments ); $i += 2 ) {
-			if( $segments[$i] == self::CSSCLASS )
-				return $segments[$i+1];
+			if( $segments[$i] == $what ) {
+				if( $index <= 0 )
+					return $segments[$i+1];
+				else
+					$index--;
+			}
 		}
 		return '';
     }
