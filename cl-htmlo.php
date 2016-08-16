@@ -25,6 +25,11 @@ namespace CL {
 
 class Htmlo
 {
+	const CSSCLASS = 'Class';
+	const TOKEN = 'Token';
+	const NUMBER = 'Number';
+	const NAMED = 'Named';
+
     private $nesting = array();
     private $output = '';
 
@@ -60,14 +65,14 @@ class Htmlo
     private function tag( $line )
     {
 		$segments = $this->segment( $line );
-		if( $segments[0] == 'a' )
-			return $this->address_tag( $segments );
-		else if( $segments[0] == 'img' )
-			return $this->img_tag( $segments );
 		$output = '<' . $segments[1];
 		$class = $this->find_class( $segments );
 		if( $class != '' )
 			$output .= " class=$class";
+		if( $segments[1] == 'a' )
+			$output .= $this->address_args( $segments );
+		else if( $segments[1] == 'img' )
+			$output .= $this->img_args( $segments );
 		$output .= '>';
 		if( $this->has_content( $segments ) ) {
 			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[1] . '>';
@@ -87,8 +92,10 @@ class Htmlo
     private function segment( $line )
     {
         $segments = array();
-        while( $this->peel( $segments, $line, '\w[^:\s]*', 'token' ) ||
-				$this->peel( $segments, $line, '\'[^\']+\'', 'class' ) ) {
+        while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
+				$this->peel( $segments, $line, '\d+', self::NUMBER ) ||
+				$this->peel( $segments, $line, '\w[^:\s]*', self::TOKEN ) ||
+				$this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ) {
         }
 		if( $this->peel( $segments, $line, ':' ) )
             $segments[] = ltrim( $line );
@@ -111,7 +118,7 @@ class Htmlo
     private function find_class( &$segments )
     {
 		for( $i=0; $i<count( $segments ); $i += 2 ) {
-			if( $segments[$i] == 'class' )
+			if( $segments[$i] == self::CSSCLASS )
 				return $segments[$i+1];
 		}
 		return '';
