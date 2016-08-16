@@ -100,8 +100,8 @@ class Htmlo
         $this->peel( $segments, $line, '\w+', self::TAG );
         while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
 				$this->peel( $segments, $line, '\d+', self::NUMBER ) ||
-				$this->peel( $segments, $line, '\w[^:\s]*', self::TOKEN ) ||
-				$this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ) {
+				$this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ||
+				$this->peel( $segments, $line, '[\w\/.][^:\s]*', self::TOKEN ) ) {
         }
 		if( $this->peel( $segments, $line, ':' ) )
             $segments[] = ltrim( $line );
@@ -131,7 +131,11 @@ class Htmlo
 
     private function address_args( &$segments )
     {
-		return '';
+		$output = '';
+		$href = $this->find_token( $segments );
+		if( $href != '' )
+			$output .= " href='" . $href . "'";
+		return $output;
     }
 
     private function img_args( &$segments )
