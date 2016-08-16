@@ -25,11 +25,11 @@ namespace CL {
 
 class Htmlo
 {
-	const TAG = 'Tag';
-	const CSSCLASS = 'Class';
-	const TOKEN = 'Token';
-	const NUMBER = 'Number';
-	const NAMED = 'Named';
+    const TAG = 'Tag';
+    const CSSCLASS = 'Class';
+    const TOKEN = 'Token';
+    const NUMBER = 'Number';
+    const NAMED = 'Named';
 
     private $tag_stack = array();
     private $output = '';
@@ -47,20 +47,22 @@ class Htmlo
         if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
             return $matches[1] . "<!-- " . $matches[2] . " -->";
         }
-        else if( preg_match( '/^(\s*)\.\.\.\s*(\w\S+)(.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
-            return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
-        }
-        else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
-            return $matches[1] . "</" . $matches[2] . ">";
-        }
         else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
             return $matches[1] . $this->tag( $matches[2] );
         }
         else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
             return $matches[1] . $this->div_class( $matches[2] );
         }
+        else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
+            $this->remove_stack_tag( $matches[2] );
+            return $matches[1] . "</" . $matches[2] . ">";
+        }
         else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
             return $matches[1] . "</" . $this->unstack_tag() . ">";
+        }
+        else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
+            $this->remove_stack_tag( $matches[2] );
+            return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
         }
 
         return $line;
@@ -68,34 +70,35 @@ class Htmlo
 
     private function tag( $line )
     {
-		$segments = $this->segment( $line );
-		$output = '<' . $segments[1];
-		$class = $this->find_class( $segments );
-		if( $class != '' )
-			$output .= " class=$class";
-		$output .= $this->tag_specific_args( $segments );
-		$output .= $this->named_args( $segments );
-		if( $this->has_content( $segments ) ) {
-			$content = $this->process_line( $this->find_content( $segments ) );
-			if( $content != '' )
-				$output .= '>' . $content . '</' . $segments[1] . '>';
-			else
-				$output .= ' />';
-		}
-		else {
-			$output .= '>';
-			$this->stack_tag( $segments[1] );
-		}
-		return $output;
+        $segments = $this->segment( $line );
+        $output = '<' . $segments[1];
+        $class = $this->find_class( $segments );
+        if( $class != '' )
+            $output .= " class=$class";
+        $output .= $this->tag_specific_args( $segments );
+        $output .= $this->named_args( $segments );
+        if( $this->has_content( $segments ) ) {
+            $content = $this->process_line( $this->find_content( $segments ) );
+            if( $content != '' )
+                $output .= '>' . $content . '</' . $segments[1] . '>';
+            else
+                $output .= ' />';
+        }
+        else {
+            $output .= '>';
+            $this->stack_tag( $segments[1] );
+        }
+        return $output;
     }
 
     private function div_class( $line )
     {
-		$segments = $this->segment( $line );
-		if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
-			return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
-		}
-		return "<div class={$segments[1]}>";
+        $segments = $this->segment( $line );
+        if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
+            return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
+        }
+        $this->stack_tag( 'div' );
+        return "<div class={$segments[1]}>";
     }
 
     private function segment( $line )
@@ -103,130 +106,137 @@ class Htmlo
         $segments = array();
         $this->peel( $segments, $line, '\w+', self::TAG );
         while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
-				$this->peel( $segments, $line, '\d+', self::NUMBER ) ||
-				$this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ||
-				$this->peel( $segments, $line, '[\w\/.][^:\s]*', self::TOKEN ) ) {
+                $this->peel( $segments, $line, '\d+', self::NUMBER ) ||
+                $this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ||
+                $this->peel( $segments, $line, '[\w\/.][^:\s]*', self::TOKEN ) ) {
         }
-		if( $this->peel( $segments, $line, ':' ) )
+        if( $this->peel( $segments, $line, ':' ) )
             $segments[] = ltrim( $line );
-		return $segments;
+        return $segments;
     }
 
     private function peel( &$segments, &$line, $pattern, $cat = '' )
     {
         if( preg_match( '/^\s*(' . $pattern . ')/', $line, $matches ) ) {
             if( $cat != '' )
-				$segments[] = $cat;
+                $segments[] = $cat;
             $segments[] = $matches[1];
             $line = preg_replace( '/^\s*' . $pattern . '/', '', $line );
-			return True;
+            return True;
         }
-		return False;
+        return False;
     }
 
     private function tag_specific_args( &$segments )
     {
-		if( $segments[1] == 'a' )
-			return $this->address_args( $segments );
-		else if( $segments[1] == 'img' )
-			return $this->img_args( $segments );
-		return '';
+        if( $segments[1] == 'a' )
+            return $this->address_args( $segments );
+        else if( $segments[1] == 'img' )
+            return $this->img_args( $segments );
+        return '';
     }
 
     private function address_args( &$segments )
     {
-		$output = '';
-		$href = $this->find_token( $segments );
-		if( $href != '' )
-			$output .= " href='" . $href . "'";
-		return $output;
+        $output = '';
+        $href = $this->find_token( $segments );
+        if( $href != '' )
+            $output .= " href='" . $href . "'";
+        return $output;
     }
 
     private function img_args( &$segments )
     {
-		$output = '';
-		$src = $this->find_token( $segments );
-		if( $src != '' )
-			$output .= " src='" . $src . "'";
-		$border = $this->find_number( $segments );
-		if( $border != '' )
-			$output .= " border='" . $border . "'";
-		return $output;
+        $output = '';
+        $src = $this->find_token( $segments );
+        if( $src != '' )
+            $output .= " src='" . $src . "'";
+        $border = $this->find_number( $segments );
+        if( $border != '' )
+            $output .= " border='" . $border . "'";
+        return $output;
     }
 
     private function named_args( &$segments )
     {
-		$output = '';
-		for( $i=0; count( $arg = $this->find_named( $segments, $i ) ) > 0; ++$i ) {
-			$output .= " {$arg[0]}='{$arg[1]}'";
-		}
-		return $output;
+        $output = '';
+        for( $i=0; count( $arg = $this->find_named( $segments, $i ) ) > 0; ++$i ) {
+            $output .= " {$arg[0]}='{$arg[1]}'";
+        }
+        return $output;
     }
 
     private function find_class( &$segments )
     {
-		return $this->find_item( $segments, self::CSSCLASS );
+        return $this->find_item( $segments, self::CSSCLASS );
     }
 
     private function find_token( &$segments, $index = 0 )
     {
-		return $this->find_item( $segments, self::TOKEN, $index );
+        return $this->find_item( $segments, self::TOKEN, $index );
     }
 
     private function find_number( &$segments, $index = 0 )
     {
-		return $this->find_item( $segments, self::NUMBER, $index );
+        return $this->find_item( $segments, self::NUMBER, $index );
     }
 
     private function find_named( &$segments, $index = 0 )
     {
-		$named = $this->find_item( $segments, self::NAMED, $index );
-		if( $named != '' && preg_match( '/(\w+)\s*\(([^\)]*)\)/', $named, $matches ) ) {
-			return array( $matches[1], trim( $matches[2] ) );
-		}
-		return array();
+        $named = $this->find_item( $segments, self::NAMED, $index );
+        if( $named != '' && preg_match( '/(\w+)\s*\(([^\)]*)\)/', $named, $matches ) ) {
+            return array( $matches[1], trim( $matches[2] ) );
+        }
+        return array();
     }
 
     private function find_item( &$segments, $what, $index = 0 )
     {
-		for( $i=0; $i<count( $segments ); $i += 2 ) {
-			if( $segments[$i] == $what ) {
-				if( $index <= 0 )
-					return $segments[$i+1];
-				else
-					$index--;
-			}
-		}
-		return '';
+        for( $i=0; $i<count( $segments ); $i += 2 ) {
+            if( $segments[$i] == $what ) {
+                if( $index <= 0 )
+                    return $segments[$i+1];
+                else
+                    $index--;
+            }
+        }
+        return '';
     }
 
     private function has_content( &$segments )
     {
-		return count( $segments >= 3 ) && $segments[count($segments)-2] == ':';
+        return count( $segments >= 3 ) && $segments[count($segments)-2] == ':';
     }
 
     private function find_content( &$segments )
     {
-		if( $this->has_content( $segments ) )
-			return $segments[count($segments)-1];
-		return '';
+        if( $this->has_content( $segments ) )
+            return $segments[count($segments)-1];
+        return '';
     }
-	
-	static $non_stackable_tags = array( 'img', 'br', 'hr' );
+
+    static $non_stackable_tags = array( 'img', 'br', 'hr' );
 
     private function stack_tag( $tag )
     {
-		if( ! in_array( $tag, self::$non_stackable_tags ) ) {
-			$this->tag_stack[] = $tag;
-		}
+        if( ! in_array( $tag, self::$non_stackable_tags ) ) {
+            $this->tag_stack[] = $tag;
+        }
     }
 
     private function unstack_tag()
     {
-		if( count( $this->tag_stack ) > 0 ) {
-			return array_pop( $this->tag_stack );
-		}
-		return '';
+        if( count( $this->tag_stack ) > 0 ) {
+            return array_pop( $this->tag_stack );
+        }
+        return '';
+    }
+
+    private function remove_stack_tag( $tag )
+    {
+        if( count( $this->tag_stack ) > 0 && $this->tag_stack[count( $this->tag_stack )-1] == $tag ) {
+            array_pop( $this->tag_stack );
+        }
     }
 }
 

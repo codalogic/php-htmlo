@@ -38,6 +38,12 @@ check( htmls('  ...foo'), '  </foo><foo>' );
 
 check( htmls(".table\n.."), "<table>\n</table>" );
 check( htmls(".table\n    .."), "<table>\n    </table>" );
+check( htmls(".table 'center'\n    .."), "<table class='center'>\n    </table>" );
+
+check( htmls(".'center'\n.."), "<div class='center'>\n</div>" );
+check( htmls(".'center'\n.p\n..\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
+check( htmls(".'center'\n.p\n..p\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
+check( htmls(".'center'\n.p\n...p\n..\n.."), "<div class='center'>\n<p>\n</p><p>\n</p>\n</div>" );
 
 report();
 ?>
