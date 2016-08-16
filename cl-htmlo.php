@@ -25,6 +25,7 @@ namespace CL {
 
 class Htmlo
 {
+	const TAG = 'Tag';
 	const CSSCLASS = 'Class';
 	const TOKEN = 'Token';
 	const NUMBER = 'Number';
@@ -71,9 +72,15 @@ class Htmlo
 			$output .= " class=$class";
 		$output .= $this->tag_specific_args( $segments );
 		$output .= $this->named_args( $segments );
-		$output .= '>';
 		if( $this->has_content( $segments ) ) {
-			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[1] . '>';
+			$content = $this->process_line( $this->find_content( $segments ) );
+			if( $content != '' )
+				$output .= '>' . $content . '</' . $segments[1] . '>';
+			else
+				$output .= ' />';
+		}
+		else {
+			$output .= '>';
 		}
 		return $output;
     }
@@ -90,6 +97,7 @@ class Htmlo
     private function segment( $line )
     {
         $segments = array();
+        $this->peel( $segments, $line, '\w+', self::TAG );
         while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
 				$this->peel( $segments, $line, '\d+', self::NUMBER ) ||
 				$this->peel( $segments, $line, '\w[^:\s]*', self::TOKEN ) ||
@@ -128,15 +136,20 @@ class Htmlo
 
     private function img_args( &$segments )
     {
-		return '';
+		$output = '';
+		$src = $this->find_token( $segments );
+		if( $src != '' )
+			$output .= " src='" . $src . "'";
+		$border = $this->find_number( $segments );
+		if( $border != '' )
+			$output .= " border='" . $border . "'";
+		return $output;
     }
 
     private function named_args( &$segments )
     {
 		$output = '';
-		print_r( $segments );
 		for( $i=0; count( $arg = $this->find_named( $segments, $i ) ) > 0; ++$i ) {
-			print_r( $arg );
 			$output .= " {$arg[0]}='{$arg[1]}'";
 		}
 		return $output;

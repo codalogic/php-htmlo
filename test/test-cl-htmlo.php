@@ -23,6 +23,10 @@ check( htmls(".'center' : special"), "<span class='center'>special</span>" );
 check( htmls(".'center bold' : special"), "<span class='center bold'>special</span>" );
 
 check( htmls('.img alt( a minor issue )'), "<img alt='a minor issue'>" );
+check( htmls('.img alt( a minor issue ):'), "<img alt='a minor issue' />" );
+check( htmls('.img images/src.png:'), "<img src='images/src.png' />" );
+check( htmls('.img images/src.png 0:'), "<img src='images/src.png' border='0' />" );
+check( htmls('.img images/src.png 0 alt( a minor issue ):'), "<img src='images/src.png' border='0' alt='a minor issue' />" );
 
 check( htmls('  ...foo'), '  </foo><foo>' );
 
