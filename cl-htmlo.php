@@ -64,13 +64,13 @@ class Htmlo
 			return $this->address_tag( $segments );
 		else if( $segments[0] == 'img' )
 			return $this->img_tag( $segments );
-		$output = '<' . $segments[0];
+		$output = '<' . $segments[1];
 		$class = $this->find_class( $segments );
 		if( $class != '' )
 			$output .= " class=$class";
 		$output .= '>';
 		if( $this->has_content( $segments ) ) {
-			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[0] . '>';
+			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[1] . '>';
 		}
 		return $output;
     }
@@ -79,25 +79,28 @@ class Htmlo
     {
 		$segments = $this->segment( $line );
 		if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
-			return "<span class={$segments[0]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
+			return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
 		}
-		return "<div class={$segments[0]}>";
+		return "<div class={$segments[1]}>";
     }
 
     private function segment( $line )
     {
         $segments = array();
-        while( $this->peel( $segments, $line, '\w[^:\s]*' ) ||
-				$this->peel( $segments, $line, '\'[^\']+\'' ) ) {
+        while( $this->peel( $segments, $line, '\w[^:\s]*', 'token' ) ||
+				$this->peel( $segments, $line, '\'[^\']+\'', 'class' ) ) {
         }
 		if( $this->peel( $segments, $line, ':' ) )
             $segments[] = ltrim( $line );
+			print_r( $segments );
 		return $segments;
     }
 
-    private function peel( &$segments, &$line, $pattern )
+    private function peel( &$segments, &$line, $pattern, $cat = '' )
     {
         if( preg_match( '/^\s*(' . $pattern . ')/', $line, $matches ) ) {
+            if( $cat != '' )
+				$segments[] = $cat;
             $segments[] = $matches[1];
             $line = preg_replace( '/^\s*' . $pattern . '/', '', $line );
 			return True;
@@ -107,9 +110,9 @@ class Htmlo
 
     private function find_class( &$segments )
     {
-		for( $i=1; $i<count( $segments ); ++$i ) {
-			if( $segments[$i][0] == "'" )
-				return $segments[$i];
+		for( $i=0; $i<count( $segments ); $i += 2 ) {
+			if( $segments[$i] == 'class' )
+				return $segments[$i+1];
 		}
 		return '';
     }
