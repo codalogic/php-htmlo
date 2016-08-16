@@ -31,7 +31,7 @@ class Htmlo
 	const NUMBER = 'Number';
 	const NAMED = 'Named';
 
-    private $nesting = array();
+    private $tag_stack = array();
     private $output = '';
 
     public function htmls( $input )
@@ -50,7 +50,7 @@ class Htmlo
         else if( preg_match( '/^(\s*)\.\.\.\s*(\w\S+)(.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
             return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
         }
-        else if( preg_match( '/^(\s*)\.\.\s*(.*)/', $line, $matches ) ) {   // End tags : .. tag
+        else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
             return $matches[1] . "</" . $matches[2] . ">";
         }
         else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
@@ -58,6 +58,9 @@ class Htmlo
         }
         else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
             return $matches[1] . $this->div_class( $matches[2] );
+        }
+        else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
+            return $matches[1] . "</" . $this->unstack_tag() . ">";
         }
 
         return $line;
@@ -81,6 +84,7 @@ class Htmlo
 		}
 		else {
 			$output .= '>';
+			$this->stack_tag( $segments[1] );
 		}
 		return $output;
     }
@@ -205,6 +209,23 @@ class Htmlo
     {
 		if( $this->has_content( $segments ) )
 			return $segments[count($segments)-1];
+		return '';
+    }
+	
+	static $non_stackable_tags = array( 'img', 'br', 'hr' );
+
+    private function stack_tag( $tag )
+    {
+		if( ! in_array( $tag, self::$non_stackable_tags ) ) {
+			$this->tag_stack[] = $tag;
+		}
+    }
+
+    private function unstack_tag()
+    {
+		if( count( $this->tag_stack ) > 0 ) {
+			return array_pop( $this->tag_stack );
+		}
 		return '';
     }
 }

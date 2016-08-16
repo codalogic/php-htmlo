@@ -36,5 +36,7 @@ check( htmls(".a 'bold' /index.php : .img images/src.png 0:"), "<a class='bold' 
 
 check( htmls('  ...foo'), '  </foo><foo>' );
 
+check( htmls(".table\n.."), "<table>\n</table>" );
+
 report();
 ?>
