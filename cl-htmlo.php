@@ -1,3 +1,4 @@
+<?php
 //----------------------------------------------------------------------------
 // Copyright (c) 2016, Codalogic Ltd (http://www.codalogic.com)
 //
@@ -20,7 +21,116 @@
 // DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------
 
-<?php
+namespace CL {
+
+class Htmlo
+{
+    private $nesting = array();
+    private $output = '';
+
+    public function htmls( $input )
+    {
+        foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
+            $this->output .= $this->process_line( $line ) . "\n";
+        }
+        return $this->output;
+    }
+
+    private function process_line( $line )
+    {
+        if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
+            return $matches[1] . "<!-- " . $matches[2] . " -->";
+        }
+        else if( preg_match( '/^(\s*)\.\.\.\s*(\w\S+)(.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
+            return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
+        }
+        else if( preg_match( '/^(\s*)\.\.\s*(.*)/', $line, $matches ) ) {   // End tags : .. tag
+            return $matches[1] . "</" . $matches[2] . ">";
+        }
+        else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
+            return $matches[1] . $this->tag( $matches[2] );
+        }
+        else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
+            return $matches[1] . $this->div_class( $matches[2] );
+        }
+
+        return $line;
+    }
+
+    private function tag( $line )
+    {
+		$segments = $this->segment( $line );
+		if( $segments[0] == 'a' )
+			return $this->address_tag( $segments );
+		else if( $segments[0] == 'img' )
+			return $this->img_tag( $segments );
+		$output = '<' . $segments[0];
+		$class = $this->find_class( $segments );
+		if( $class != '' )
+			$output .= " class=$class";
+		$output .= '>';
+		if( $this->has_content( $segments ) ) {
+			$output .= $this->process_line( $this->find_content( $segments ) ) . '</' . $segments[0] . '>';
+		}
+		return $output;
+    }
+
+    private function div_class( $line )
+    {
+		$segments = $this->segment( $line );
+		if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
+			return "<span class={$segments[0]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
+		}
+		return "<div class={$segments[0]}>";
+    }
+
+    private function segment( $line )
+    {
+        $segments = array();
+        while( $this->peel( $segments, $line, '\w[^:\s]*' ) ||
+				$this->peel( $segments, $line, '\'[^\']+\'' ) ) {
+        }
+		if( $this->peel( $segments, $line, ':' ) )
+            $segments[] = ltrim( $line );
+		return $segments;
+    }
+
+    private function peel( &$segments, &$line, $pattern )
+    {
+        if( preg_match( '/^\s*(' . $pattern . ')/', $line, $matches ) ) {
+            $segments[] = $matches[1];
+            $line = preg_replace( '/^\s*' . $pattern . '/', '', $line );
+			return True;
+        }
+		return False;
+    }
+
+    private function find_class( &$segments )
+    {
+		for( $i=1; $i<count( $segments ); ++$i ) {
+			if( $segments[$i][0] == "'" )
+				return $segments[$i];
+		}
+		return '';
+    }
+
+    private function has_content( &$segments )
+    {
+		return count( $segments >= 3 ) && $segments[count($segments)-2] == ':';
+    }
+
+    private function find_content( &$segments )
+    {
+		if( $this->has_content( $segments ) )
+			return $segments[count($segments)-1];
+		return '';
+    }
+}
+
+}   // End of namespace CL
+
+namespace { // Global namespace
+
 function htmlo( $input )
 {
     echo htmls( $input );
@@ -28,5 +138,9 @@ function htmlo( $input )
 
 function htmls( $input )
 {
+    $h = new CL\Htmlo();
+    return $h->htmls( $input );
 }
+
+}   // End of global namespace
 ?>
