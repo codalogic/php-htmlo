@@ -1,0 +1,14 @@
+# See https://github.com/codalogic/exodep for details on use and format of
+# exodep file
+
+default $php_dst   ./
+
+default $cl_php_htmlo_dst   ${php_dst}
+
+$owner codalogic
+$project php-htmlo
+$strand angst
+
+versions    # Invoking 'versions' must happen after setting up $owner/$project variables
+
+copy cl-htmlo.php   ${cl_php_htmlo_dst}
