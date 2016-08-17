@@ -32,6 +32,7 @@ check( htmls('.img images/src.png 0 alt( a minor issue ):'), "<img src='images/s
 check( htmls('.a ./ : foo'), "<a href='./'>foo</a>" );
 check( htmls('.a /index.php : foo'), "<a href='/index.php'>foo</a>" );
 check( htmls(".a 'bold' /index.php : foo"), "<a class='bold' href='/index.php'>foo</a>" );
+check( htmls(".a http://codalogic.com/index.php : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
 
 check( htmls(".a 'bold' /index.php : .img images/src.png 0:"), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
 
