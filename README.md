@@ -217,3 +217,9 @@ before outputting it, and thus maybe more efficient if multiple nested
 functions are called.  It can also give more consistent results in the case
 where the called functions `echo`s out its data directly rather than
 returning it as a string.
+
+## Testing
+
+Open a shell and `cd` to the test directory.  Then do
+`php test-cl-htmlo.php`.  (The full path will be needed to be included on
+the `php` command if the command is not on the command path.)
