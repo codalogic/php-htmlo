@@ -16,7 +16,7 @@ will generate:
 
 ## Usage
 
-Include `cl-htmlo.php' in the file that wants to use it.  An `exodep` file
+Include `cl-htmlo.php` in the file that wants to use it.  An `exodep` file
 for this is available at `exodep-exports/php-htmlo.exodep` which can be
 copied and modified to your project to facilitate updates.
 
