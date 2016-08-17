@@ -1,7 +1,7 @@
 # See https://github.com/codalogic/exodep for details on use and format of
 # exodep file
 
-default $php_dst   ./
+default $php_dst   httpdocs/
 
 default $cl_php_htmlo_dst   ${php_dst}
 
