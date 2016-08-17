@@ -109,6 +109,11 @@ will yield:
     Text
     </p>
 
+Note that each call to the `htmlo()` or
+`htmls()` functions maintains their own tag stack.  Therefore tag nesting
+can not be pushed in one function call and automatically popped in
+a subsequent function call.
+
 Three dots will close a tag and start a new one, for example:
 
     ...'my-class'
