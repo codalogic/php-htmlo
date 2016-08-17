@@ -44,7 +44,8 @@ class Htmlo
 
     private function process_line( $line )
     {
-        if( ltrim( $line )[0] == '.' ) {
+		$trimmed_line = ltrim( $line );
+        if( $trimmed_line[0] == '.' ) {
             if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
