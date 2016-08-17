@@ -4,6 +4,7 @@ include( 'cl-phpunit.php' );
 
 check( htmls('ab'), 'ab' );
 check( htmls("ab\ncd"), "ab\ncd" );
+check( htmls("ab\n<i>cd</i>"), "ab\n<i>cd</i>" );
 
 check( htmls('.# foo'), '<!-- foo -->' );
 check( htmls("ab\n .# foo"), "ab\n <!-- foo -->" );
@@ -47,6 +48,8 @@ check( htmls(".'center'\n.p\n  ...p\n..\n.."), "<div class='center'>\n<p>\n  </p
 
 check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
 
+check( htmls("Start\n.: if( a < b && b <= c )\nEnd"), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
+
 check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
 $in = 'huff';
 $out = 'puff';
@@ -55,6 +58,9 @@ check( htmls("Start\n.!wibble2 $in $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
 check( htmls("Start\n.!wibble3 $in $out f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
 check( htmls("Start\n.!wibble4 $in $out f3 f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
 check( htmls("Start\n.!wibble5 $in $out f3 f4 f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
+
+echo "Visually check echo is: Start\nwobblehuffpufff3f4f5\nEnd\n";
+htmlo("Start\n.!!wibble5 $in $out f3 f4 f5\nEnd\n");
 
 function wibble()
 {

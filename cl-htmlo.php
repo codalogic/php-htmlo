@@ -72,6 +72,15 @@ class Htmlo
             else if( preg_match( '/^(\s*)\.\s*!(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
                 return $this->call_func( $matches[2] );
             }
+            else if( preg_match( '/^(\s*)\.\s*!!(\w.*)/', $line, $matches ) ) {   // Call function with echo : .!![a-z]
+                echo $this->output;
+                echo $this->call_func( $matches[2] );
+                $this->output = '';
+                return '';
+            }
+            else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
+                return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
+            }
         }
 
         return $line;
