@@ -44,7 +44,7 @@ class Htmlo
 
     private function process_line( $line )
     {
-		$trimmed_line = ltrim( $line );
+        $trimmed_line = ltrim( $line );
         if( $trimmed_line[0] == '.' ) {
             if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
@@ -141,7 +141,7 @@ class Htmlo
         while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
                 $this->peel( $segments, $line, '\d+', self::NUMBER ) ||
                 $this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ||
-                $this->peel( $segments, $line, '(?:https?|mailto):[^:\s]*', self::TOKEN ) ||		// Needs to be before the second token form
+                $this->peel( $segments, $line, '(?:https?|mailto):[^:\s]*', self::TOKEN ) ||        // Needs to be before the second token form
                 $this->peel( $segments, $line, '[\w\/.][^:\s]*', self::TOKEN ) ) {
         }
         if( $this->peel( $segments, $line, ':' ) )
