@@ -44,25 +44,27 @@ class Htmlo
 
     private function process_line( $line )
     {
-        if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
-            return $matches[1] . "<!-- " . $matches[2] . " -->";
-        }
-        else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
-            return $matches[1] . $this->tag( $matches[2] );
-        }
-        else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
-            return $matches[1] . $this->div_class( $matches[2] );
-        }
-        else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
-            $this->remove_stack_tag( $matches[2] );
-            return $matches[1] . "</" . $matches[2] . ">";
-        }
-        else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
-            return $matches[1] . "</" . $this->unstack_tag() . ">";
-        }
-        else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
-            $this->remove_stack_tag( $matches[2] );
-            return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
+        if( ltrim( $line )[0] == '.' ) {
+            if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
+                return $matches[1] . "<!-- " . $matches[2] . " -->";
+            }
+            else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
+                return $matches[1] . $this->tag( $matches[2] );
+            }
+            else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
+                return $matches[1] . $this->div_class( $matches[2] );
+            }
+            else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
+                $this->remove_stack_tag( $matches[2] );
+                return $matches[1] . "</" . $matches[2] . ">";
+            }
+            else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
+                return $matches[1] . "</" . $this->unstack_tag() . ">";
+            }
+            else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
+                $this->remove_stack_tag( $matches[2] );
+                return $matches[1] . "</" . $matches[2] . ">" . $this->tag( $matches[2] . $matches[3] );
+            }
         }
 
         return $line;
