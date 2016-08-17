@@ -34,7 +34,7 @@ check( htmls(".a 'bold' /index.php : foo"), "<a class='bold' href='/index.php'>f
 
 check( htmls(".a 'bold' /index.php : .img images/src.png 0:"), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
 
-check( htmls('  ...foo'), '  </foo><foo>' );
+check( htmls('  ...foo'), "  </foo>\n  <foo>" );
 
 check( htmls(".table\n.."), "<table>\n</table>" );
 check( htmls(".table\n    .."), "<table>\n    </table>" );
@@ -43,7 +43,7 @@ check( htmls(".table 'center'\n    .."), "<table class='center'>\n    </table>" 
 check( htmls(".'center'\n.."), "<div class='center'>\n</div>" );
 check( htmls(".'center'\n.p\n..\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
 check( htmls(".'center'\n.p\n..p\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
-check( htmls(".'center'\n.p\n...p\n..\n.."), "<div class='center'>\n<p>\n</p><p>\n</p>\n</div>" );
+check( htmls(".'center'\n.p\n  ...p\n..\n.."), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
 
 report();
 ?>
