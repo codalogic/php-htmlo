@@ -69,6 +69,9 @@ class Htmlo
                 $this->remove_stack_tag( 'div' );
                 return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] . $matches[3] );
             }
+            else if( preg_match( '/^(\s*)\.\s*!(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
+                return $this->call_func( $matches[2] );
+            }
         }
 
         return $line;
@@ -105,6 +108,20 @@ class Htmlo
         }
         $this->stack_tag( 'div' );
         return "<div class={$segments[1]}>";
+    }
+
+    private function call_func( $line )
+    {
+        $segments = $this->segment( $line );
+        switch( count( $segments ) ) {
+            case 2: return $segments[1]();
+            case 4: return $segments[1]( $segments[3] );
+            case 6: return $segments[1]( $segments[3], $segments[5] );
+            case 8: return $segments[1]( $segments[3], $segments[5], $segments[7] );
+            case 10: return $segments[1]( $segments[3], $segments[5], $segments[7], $segments[9] );
+            case 12: return $segments[1]( $segments[3], $segments[5], $segments[7], $segments[9], $segments[11] );
+        }
+        return $segments[1]();
     }
 
     private function segment( $line )

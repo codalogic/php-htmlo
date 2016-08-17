@@ -47,5 +47,44 @@ check( htmls(".'center'\n.p\n  ...p\n..\n.."), "<div class='center'>\n<p>\n  </p
 
 check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
 
+check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
+$in = 'huff';
+$out = 'puff';
+check( htmls("Start\n.!wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
+check( htmls("Start\n.!wibble2 $in $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
+check( htmls("Start\n.!wibble3 $in $out f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
+check( htmls("Start\n.!wibble4 $in $out f3 f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
+check( htmls("Start\n.!wibble5 $in $out f3 f4 f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
+
+function wibble()
+{
+    return 'wobble';
+}
+
+function wibble1( $what )
+{
+    return 'wobble' . $what;
+}
+
+function wibble2( $what1, $what2 )
+{
+    return 'wobble' . $what1 . $what2;
+}
+
+function wibble3( $what1, $what2, $what3 )
+{
+    return 'wobble' . $what1 . $what2 . $what3;
+}
+
+function wibble4( $what1, $what2, $what3, $what4 )
+{
+    return 'wobble' . $what1 . $what2 . $what3 . $what4;
+}
+
+function wibble5( $what1, $what2, $what3, $what4, $what5 )
+{
+    return 'wobble' . $what1 . $what2 . $what3 . $what4 . $what5;
+}
+
 report();
 ?>
