@@ -65,6 +65,10 @@ class Htmlo
                 $this->remove_stack_tag( $matches[2] );
                 return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] . $matches[3] );
             }
+            else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
+                $this->remove_stack_tag( 'div' );
+                return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] . $matches[3] );
+            }
         }
 
         return $line;
