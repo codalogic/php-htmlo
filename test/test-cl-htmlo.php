@@ -15,6 +15,7 @@ check( htmls('  .. foo'), '  </foo>' );
 
 check( htmls('.foo'), '<foo>' );
 check( htmls('.foo: bar'), '<foo>bar</foo>' );
+check( htmls('.foo: bar '), '<foo>bar</foo>' );
 check( htmls('.i: .b: bar'), '<i><b>bar</b></i>' );
 
 check( htmls(".foo 'center left': bar"), "<foo class='center left'>bar</foo>" );

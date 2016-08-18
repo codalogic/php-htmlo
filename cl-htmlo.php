@@ -146,7 +146,7 @@ class Htmlo
                     $this->peel( $segments, $line, '/^[\w\/.][^:\s]*/', self::TOKEN ) ) ) {
         }
         if( $this->peel( $segments, $line, '/^:/' ) )
-            $segments[] = ltrim( $line );
+            $segments[] = trim( $line );
         return $segments;
     }
 
