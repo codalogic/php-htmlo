@@ -137,25 +137,26 @@ class Htmlo
     private function segment( $line )
     {
         $segments = array();
-        $this->peel( $segments, $line, '\w+', self::TAG );
-        while( $this->peel( $segments, $line, '\w+\([^)]*\)', self::NAMED ) ||
-                $this->peel( $segments, $line, '\d+', self::NUMBER ) ||
-                $this->peel( $segments, $line, '\'[^\']+\'', self::CSSCLASS ) ||
-                $this->peel( $segments, $line, '(?:https?|mailto):[^:\s]*', self::TOKEN ) ||        // Needs to be before the second token form
-                $this->peel( $segments, $line, '[\w\/.][^:\s]*', self::TOKEN ) ) {
+        $this->peel( $segments, $line, '/^\w+/', self::TAG );
+        while( ($line = ltrim( $line ) ) != '' &&
+                ( $this->peel( $segments, $line, '/^\w+\([^)]*\)/', self::NAMED ) ||
+                    $this->peel( $segments, $line, '/^\d+/', self::NUMBER ) ||
+                    $this->peel( $segments, $line, '/^\'[^\']+\'/', self::CSSCLASS ) ||
+                    $this->peel( $segments, $line, '/^(?:https?|mailto):[^:\s]*/', self::TOKEN ) ||        // Needs to be before the second token form
+                    $this->peel( $segments, $line, '/^[\w\/.][^:\s]*/', self::TOKEN ) ) ) {
         }
-        if( $this->peel( $segments, $line, ':' ) )
+        if( $this->peel( $segments, $line, '/^:/' ) )
             $segments[] = ltrim( $line );
         return $segments;
     }
 
     private function peel( &$segments, &$line, $pattern, $cat = '' )
     {
-        if( preg_match( '/^\s*(' . $pattern . ')/', $line, $matches ) ) {
+        if( preg_match( $pattern, $line, $matches ) ) {
             if( $cat != '' )
                 $segments[] = $cat;
-            $segments[] = $matches[1];
-            $line = preg_replace( '/^\s*' . $pattern . '/', '', $line );
+            $segments[] = $matches[0];
+            $line = substr( $line, strlen( $matches[0] ) );
             return True;
         }
         return False;
