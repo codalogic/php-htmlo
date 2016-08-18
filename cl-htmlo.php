@@ -23,7 +23,7 @@
 
 namespace CL {
 
-class Htmlo
+abstract class Htmlo
 {
     const TAG = 'Tag';
     const CSSCLASS = 'Class';
@@ -32,14 +32,14 @@ class Htmlo
     const NAMED = 'Named';
 
     private $tag_stack = array();
-    private $output = '';
 
-    public function htmls( $input )
+    abstract protected function emit( $output );
+
+    public function htmlo( $input )
     {
         foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
-            $this->output .= $this->process_line( $line ) . "\n";
+            $this->emit( $this->process_line( $line ) . "\n" );
         }
-        return $this->output;
     }
 
     private function process_line( $line )
@@ -72,12 +72,6 @@ class Htmlo
             }
             else if( preg_match( '/^(\s*)\.\s*!(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
                 return $this->call_func( $matches[2] );
-            }
-            else if( preg_match( '/^(\s*)\.\s*!!(\w.*)/', $line, $matches ) ) {   // Call function with echo : .!![a-z]
-                echo $this->output;
-                echo $this->call_func( $matches[2] );
-                $this->output = '';
-                return '';
             }
             else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
                 return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
@@ -275,18 +269,43 @@ class Htmlo
     }
 }
 
+class HtmloEcho extends Htmlo
+{
+    protected function emit( $output )
+    {
+        echo( $output );
+    }
+}
+
+class HtmloString extends Htmlo
+{
+    private $output_array = array();
+
+    protected function emit( $output )
+    {
+        $this->output_array[] = $output;
+    }
+
+    public function htmls( $input )
+    {
+        $this->htmlo( $input );
+        return implode( $this->output_array );
+    }
+}
+
 }   // End of namespace CL
 
 namespace { // Global namespace
 
 function htmlo( $input )
 {
-    echo htmls( $input );
+    $h = new CL\HtmloEcho();
+    $h->htmlo( $input );
 }
 
 function htmls( $input )
 {
-    $h = new CL\Htmlo();
+    $h = new CL\HtmloString();
     return $h->htmls( $input );
 }
 
