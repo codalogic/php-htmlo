@@ -23,7 +23,7 @@
 
 namespace CL {
 
-abstract class Htmlo
+abstract class HtmloCore
 {
     const TAG = 'Tag';
     const CSSCLASS = 'Class';
@@ -47,7 +47,7 @@ abstract class Htmlo
     private function process_line( $line )
     {
         $trimmed_line = ltrim( $line );
-        if( $trimmed_line[0] == '.' ) {
+        if( $trimmed_line != '' && $trimmed_line[0] == '.' ) {
             if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
@@ -70,7 +70,7 @@ abstract class Htmlo
             }
             else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
                 $this->remove_stack_tag( 'div' );
-                return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] . $matches[3] );
+                return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
             }
             else if( preg_match( '/^(\s*)\.\s*!(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
                 return $this->call_func( $matches[2] );
@@ -271,7 +271,7 @@ abstract class Htmlo
     }
 }
 
-class HtmloEcho extends Htmlo
+class HtmloEcho extends HtmloCore
 {
     protected function emit( $output )
     {
@@ -279,7 +279,7 @@ class HtmloEcho extends Htmlo
     }
 }
 
-class HtmloString extends Htmlo
+class HtmloString extends HtmloCore
 {
     private $output_array = array();
 
