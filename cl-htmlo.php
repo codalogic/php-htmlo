@@ -138,7 +138,7 @@ class Htmlo
     {
         $segments = array();
         $this->peel( $segments, $line, '/^\w+/', self::TAG );
-        while( ($line = ltrim( $line ) ) != '' &&
+        while( ($line = ltrim( $line )) != '' &&
                 ( $this->peel( $segments, $line, '/^\w+\([^)]*\)/', self::NAMED ) ||
                     $this->peel( $segments, $line, '/^\d+/', self::NUMBER ) ||
                     $this->peel( $segments, $line, '/^\'[^\']+\'/', self::CSSCLASS ) ||
