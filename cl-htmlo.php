@@ -38,7 +38,9 @@ abstract class Htmlo
     public function htmlo( $input )
     {
         foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
-            $this->emit( $this->process_line( $line ) . "\n" );
+            $result = $this->process_line( $line );
+            if( isset( $result ) )
+                $this->emit( $result . "\n" );
         }
     }
 

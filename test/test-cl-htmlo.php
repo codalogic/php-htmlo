@@ -71,7 +71,7 @@ check( htmls("Start\n.!wibble5 $in $out f3 f4 f5\nEnd"), "Start\nwobblehuffpufff
 
 echo "Visually check echo is: Start\nwobblehuffpufff3f4f5\nEnd\n";
 htmlo("Start\n.!wibble5 $in $out f3 f4 f5\nEnd\n");
-echo "Visually check echo is: Start\nwibble5echohuffpufff3f4f5\nEnd\n";
+echo "Visually check echo is: Start\nwobbleechohuffpufff3f4f5\nEnd\n";
 htmlo("Start\n.!wibble5echo $in $out f3 f4 f5\nEnd\n");
 
 function wibble()
@@ -106,7 +106,7 @@ function wibble5( $what1, $what2, $what3, $what4, $what5 )
 
 function wibble5echo( $what1, $what2, $what3, $what4, $what5 )
 {
-    echo( 'wobbleecho' . $what1 . $what2 . $what3 . $what4 . $what5 );
+    echo( 'wobbleecho' . $what1 . $what2 . $what3 . $what4 . $what5 . "\n" );
 }
 
 report();
