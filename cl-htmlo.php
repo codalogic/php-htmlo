@@ -143,7 +143,7 @@ class Htmlo
                     $this->peel( $segments, $line, '/^\d+/', self::NUMBER ) ||
                     $this->peel( $segments, $line, '/^\'[^\']+\'/', self::CSSCLASS ) ||
                     $this->peel( $segments, $line, '/^(?:https?|mailto):[^:\s]*/', self::TOKEN ) ||        // Needs to be before the second token form
-                    $this->peel( $segments, $line, '/^[\w\/.][^:\s]*/', self::TOKEN ) ) ) {
+                    $this->peel( $segments, $line, '/^[^\s:\'][^:\s]*/', self::TOKEN ) ) ) {
         }
         if( $this->peel( $segments, $line, '/^:/' ) )
             $segments[] = trim( $line );

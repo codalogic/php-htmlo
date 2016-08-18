@@ -29,6 +29,7 @@ check( htmls('.img alt( a minor issue ):'), "<img alt='a minor issue' />" );
 check( htmls('.img images/src.png:'), "<img src='images/src.png' />" );
 check( htmls('.img images/src.png 0:'), "<img src='images/src.png' border='0' />" );
 check( htmls('.img images/src.png 0 alt( a minor issue ):'), "<img src='images/src.png' border='0' alt='a minor issue' />" );
+check( htmls('.img src(images/src.png):'), "<img src='images/src.png' />" );
 
 check( htmls('.a ./ : foo'), "<a href='./'>foo</a>" );
 check( htmls('.a /index.php : foo'), "<a href='/index.php'>foo</a>" );
@@ -36,6 +37,11 @@ check( htmls(".a 'bold' /index.php : foo"), "<a class='bold' href='/index.php'>f
 check( htmls(".a http://codalogic.com/index.php : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
 check( htmls(".a https://codalogic.com/index.php: foo"), "<a href='https://codalogic.com/index.php'>foo</a>" );
 check( htmls(".a mailto:nowhere@example.com: foo"), "<a href='mailto:nowhere@example.com'>foo</a>" );
+check( htmls(".a href( http://codalogic.com/index.php ) : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
+check( htmls(".a # : foo"), "<a href='#'>foo</a>" );
+check( htmls(".a #bar : foo"), "<a href='#bar'>foo</a>" );
+
+check( htmls(".a name(bar) :"), "<a name='bar' />" );
 
 check( htmls(".a 'bold' /index.php : .img images/src.png 0:"), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
 
