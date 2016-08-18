@@ -194,7 +194,7 @@ yields:
 
     if( a &lt; b &amp;&amp; b &lt;= c )
 
-PHP functions can be called using the `.!` and `.!!` directives.  The
+PHP functions can be called using the `.!` directive.  The
 following:
 
     .! my_func $i $j
@@ -213,15 +213,6 @@ actual directive seen by the `htmlo` functions would be:
     .! my_func Fred Bloggs
 
 This does however yield the desired results.
-
-The `.!!` form is more applicable in the case of the `htmlo()` function.
-When this directive is encountered it `echo`s the string accumulated so
-far, then `echo`s the string returned by the function, and then continues
-to accumulate output.  This avoids accumulating lots of output into a string
-before outputting it, and thus maybe more efficient if multiple nested
-functions are called.  It can also give more consistent results in the case
-where the called functions `echo`s out its data directly rather than
-returning it as a string.
 
 ## Testing
 
