@@ -3,6 +3,7 @@
 
 ondir htdocs   default $php_dst htdocs/
 ondir httpdocs default $php_dst httpdocs/
+ondir wwwroot  default $php_dst wwwroot/
 default $php_dst ./
 
 default $cl_php_htmlo_dst   ${php_dst}
