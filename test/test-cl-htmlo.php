@@ -61,6 +61,8 @@ check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div cl
 check( htmls("Start\n.: if( a < b && b <= c )\nEnd"), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
 
 check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
+check( htmls("Start\n.! wibble\nEnd"), "Start\nwobble\nEnd" );
+check( htmls("Start\n. !wibble\nEnd"), "Start\nwobble\nEnd" );
 $in = 'huff';
 $out = 'puff';
 check( htmls("Start\n.!wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );

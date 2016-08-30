@@ -72,7 +72,7 @@ abstract class HtmloCore
                 $this->remove_stack_tag( 'div' );
                 return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
             }
-            else if( preg_match( '/^(\s*)\.\s*!(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
+            else if( preg_match( '/^(\s*)\.\s*!\s*(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
                 return $this->call_func( $matches[2] );
             }
             else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
