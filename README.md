@@ -109,7 +109,7 @@ will yield:
         Text
     </p>
 
-Similarly, 3 dots will close the current tag andthen re-open it.  So:
+Similarly, 3 dots will close the current tag and then re-open it.  So:
 
     .p
         Text
