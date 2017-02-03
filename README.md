@@ -100,13 +100,30 @@ will create:
 close the last opened tag.  For example:
 
     .p
-    Text
+        Text
     ..
 
 will yield:
 
     <p>
-    Text
+        Text
+    </p>
+
+Similarly, 3 dots will close the current tag andthen re-open it.  So:
+
+    .p
+        Text
+    ...
+        More Text
+    ..
+
+will yield:
+
+    <p>
+        Text
+    </p>
+    <p>
+        More Text
     </p>
 
 Note that each call to the `htmlo()` or

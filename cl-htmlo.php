@@ -64,6 +64,10 @@ abstract class HtmloCore
             else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
                 return $matches[1] . "</" . $this->unstack_tag() . ">";
             }
+            else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
+				$tag = $this->peek_stack_tag();
+                return $matches[1] . "</" . $tag . ">\n" . $matches[1] . "<" . $tag . ">";
+            }
             else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
                 $this->remove_stack_tag( $matches[2] );
                 return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] . $matches[3] );
@@ -259,6 +263,14 @@ abstract class HtmloCore
     {
         if( count( $this->tag_stack ) > 0 ) {
             return array_pop( $this->tag_stack );
+        }
+        return '';
+    }
+
+    private function peek_stack_tag()
+    {
+        if( count( $this->tag_stack ) > 0 ) {
+            return $this->tag_stack[count( $this->tag_stack )-1];
         }
         return '';
     }

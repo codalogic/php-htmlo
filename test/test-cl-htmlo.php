@@ -56,6 +56,8 @@ check( htmls(".'center'\n.p\n..\n.."), "<div class='center'>\n<p>\n</p>\n</div>"
 check( htmls(".'center'\n.p\n..p\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
 check( htmls(".'center'\n.p\n  ...p\n..\n.."), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
 
+check( htmls(".'center'\n.p\n  ...\n..\n.."), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
+
 check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
 
 check( htmls("Start\n.: if( a < b && b <= c )\nEnd"), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
