@@ -96,6 +96,15 @@ will create:
 
     </p>
 
+Three dots will close a tag and start a new one, for example:
+
+    ...'my-class'
+
+will cause:
+
+    </div>
+    <div class='my-class'>
+
 `htmlo` attempts to keep track of tag nesting, so two dots on their own
 close the last opened tag.  For example:
 
@@ -109,7 +118,7 @@ will yield:
         Text
     </p>
 
-Similarly, 3 dots will close the current tag and then re-open it.  So:
+Similarly, 3 dots on their own will close the current tag and then re-open it.  So:
 
     .p
         Text
@@ -130,15 +139,6 @@ Note that each call to the `htmlo()` or
 `htmls()` functions maintains their own tag stack.  Therefore tag nesting
 can not be pushed in one function call and automatically popped in
 a subsequent function call.
-
-Three dots will close a tag and start a new one, for example:
-
-    ...'my-class'
-
-will cause:
-
-    </div>
-    <div class='my-class'>
 
 Certain HTML elements have special handling.
 
