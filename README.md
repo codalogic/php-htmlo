@@ -203,6 +203,10 @@ yields:
 
     <!-- My comment -->
 
+Lines beginning with `.-` are ignored, and no output is generated, for example:
+
+    .- .p: This will be ignored
+
 Content can be HTML escaped using `.:`, for example:
 
     .: if( a < b && b <= c )

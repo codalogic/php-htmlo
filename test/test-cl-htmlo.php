@@ -10,6 +10,10 @@ check( htmls('.# foo'), '<!-- foo -->' );
 check( htmls("ab\n .# foo"), "ab\n <!-- foo -->" );
 check( htmls('  .# foo'), '  <!-- foo -->' );
 
+check( htmls('.- foo'), '' );
+check( htmls("ab\n .- foo\ncd"), "ab\ncd\n" );
+check( htmls('  .- foo'), '' );
+
 check( htmls('.. foo'), '</foo>' );
 check( htmls('  .. foo'), '  </foo>' );
 

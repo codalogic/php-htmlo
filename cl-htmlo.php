@@ -51,6 +51,9 @@ abstract class HtmloCore
             if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
+            else if( preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored lines : .-
+                return NULL;
+            }
             else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
                 return $matches[1] . $this->tag( $matches[2] );
             }
