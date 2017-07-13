@@ -140,6 +140,32 @@ Note that each call to the `htmlo()` or
 can not be pushed in one function call and automatically popped in
 a subsequent function call.
 
+`.|` splits the content at the `|` symbol and processes each part as
+if it were a stand-alone line.  For example:
+
+    .|: .i: A | .b: B
+
+will yield:
+
+    <i>A</i><b>B</b>
+
+If it is desired to perform the split using a different character to `|`, this
+can be specified between the `|` and `:` charaters.  For example:
+
+    .|^: .i: A ^ .b: B ^ .u: U
+
+yields:
+
+    <i>A</i><b>B</b><u>U</u>
+
+This can be helpful when generating table rows etc.  E.g.:
+
+    .tr: .|: .td: A | .td: B | .td: C
+
+outputs:
+
+    <tr><td>A</td><td>B</td><td>C</td></tr>
+
 Certain HTML elements have special handling.
 
 In the case of the `a` element:

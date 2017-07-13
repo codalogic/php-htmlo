@@ -51,8 +51,11 @@ abstract class HtmloCore
             if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
-            else if( preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored lines : .-
+            else if( preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-
                 return NULL;
+            }
+            else if( preg_match( '/^(\s*)\.\|(.)?:\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
+                return $this->split_line( $matches[1], $matches[2], $matches[3] );
             }
             else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
                 return $matches[1] . $this->tag( $matches[2] );
@@ -68,7 +71,7 @@ abstract class HtmloCore
                 return $matches[1] . "</" . $this->unstack_tag() . ">";
             }
             else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
-				$tag = $this->peek_stack_tag();
+                $tag = $this->peek_stack_tag();
                 return $matches[1] . "</" . $tag . ">\n" . $matches[1] . "<" . $tag . ">";
             }
             else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
@@ -88,6 +91,19 @@ abstract class HtmloCore
         }
 
         return $line;
+    }
+
+    private function split_line( $indent, $separator, $directives )
+    {
+        if( $separator == '' )
+            $separator = '|';
+        $line = '';
+        foreach( explode( $separator, $directives ) as $sub_line ) {
+            $result = $this->process_line( trim( $sub_line ) );
+            if( isset( $result ) )
+                $line .= $result;
+        }
+        return $indent . $line;
     }
 
     private function tag( $line )
