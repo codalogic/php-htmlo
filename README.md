@@ -149,10 +149,10 @@ will yield:
 
     <i>A</i><b>B</b>
 
-If it is desired to perform the split using a different character to `|`, this
-can be specified between the `|` and `:` characters.  For example:
+If it is desired to perform the split using a different character to `|`, or a
+character sequence, this can be specified between the `|` and `:` characters.  For example:
 
-    .|^: .i: A ^ .b: B ^ .u: U
+    .|^^: .i: A ^^ .b: B ^^ .u: U
 
 yields:
 

@@ -119,7 +119,9 @@ function wibble5echo( $what1, $what2, $what3, $what4, $what5 )
 
 check( htmls("  .|: .i: A | .b: B"), "  <i>A</i><b>B</b>" );
 check( htmls("  .|^: .i: A ^ .b: B ^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
+check( htmls("  .|^^: .i: A ^^ .b: B ^^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
 check( htmls("  .tr: .|: .td: A | .td: B | .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
+check( htmls("  .tr: .|~~: .td: A ~~ .td: B ~~ .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
 
 report();
 ?>

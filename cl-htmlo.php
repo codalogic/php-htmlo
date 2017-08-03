@@ -54,7 +54,7 @@ abstract class HtmloCore
             else if( preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-
                 return NULL;
             }
-            else if( preg_match( '/^(\s*)\.\|(.)?:\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
+            else if( preg_match( '/^(\s*)\.\|([^:]*):\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
                 return $this->split_line( $matches[1], $matches[2], $matches[3] );
             }
             else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
