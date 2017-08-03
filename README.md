@@ -150,7 +150,7 @@ will yield:
     <i>A</i><b>B</b>
 
 If it is desired to perform the split using a different character to `|`, this
-can be specified between the `|` and `:` charaters.  For example:
+can be specified between the `|` and `:` characters.  For example:
 
     .|^: .i: A ^ .b: B ^ .u: U
 
