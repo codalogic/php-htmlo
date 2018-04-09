@@ -122,6 +122,10 @@ check( htmls("  .|^: .i: A ^ .b: B ^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
 check( htmls("  .|^^: .i: A ^^ .b: B ^^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
 check( htmls("  .tr: .|: .td: A | .td: B | .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
 check( htmls("  .tr: .|~~: .td: A ~~ .td: B ~~ .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
+check( htmls("  .|: .i: A | | .b: B"), "  <i>A</i> <b>B</b>" );
+
+check( htmls("  .|: This is text | .!wibble | More text"), "  This is textwobbleMore text" );
+check( htmls("  .|: This is text | | .!wibble | | More text"), "  This is text wobble More text" );
 
 report();
 ?>

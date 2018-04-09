@@ -166,6 +166,20 @@ outputs:
 
     <tr><td>A</td><td>B</td><td>C</td></tr>
 
+`.|` will trim whitespace from both ends of each sub-branch, as can be seen
+above.  To include whitespace at the beginning or end of a sub-branch, put
+it in its own sub-branch.  Any sub-branch containing only whitespace will be
+output as-is, without any further processing.  For example:
+
+    .|: .i: A | | .b: B
+
+will result in:
+
+    <i>A</i> <b>B</b>
+
+`.|` can also be used as a way of outputting the contents of a function call
+in the middle of a line being processed.  See below for details.
+
 Certain HTML elements have special handling.
 
 In the case of the `a` element:
@@ -260,6 +274,23 @@ actual directive seen by the `htmlo` functions would be:
     .! my_func Fred Bloggs
 
 This does however yield the desired results.
+
+To output the results of a function in the middle of a line, a trick using
+the `.|` line splitter option can be used.  For example:
+
+    .|: This is text | .!wibble | More text
+
+yields:
+
+    This is textwobbleMore text
+
+and, using the technique to ensure spaces between the fields:
+
+    .|: This is text | | .!wibble | | More text
+
+yields:
+
+    This is text wobble More text
 
 ## Testing
 

@@ -99,9 +99,13 @@ abstract class HtmloCore
             $separator = '|';
         $line = '';
         foreach( explode( $separator, $directives ) as $sub_line ) {
-            $result = $this->process_line( trim( $sub_line ) );
-            if( isset( $result ) )
-                $line .= $result;
+            if( preg_match( '/^\s*$/', $sub_line ) ) // If all whitespace...just add to result
+                $line .= $sub_line;
+            else {
+                $result = $this->process_line( trim( $sub_line ) );
+                if( isset( $result ) )
+                    $line .= $result;
+            }
         }
         return $indent . $line;
     }
