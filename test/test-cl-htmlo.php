@@ -65,6 +65,7 @@ check( htmls(".'center'\n.p\n  ...\n..\n.."), "<div class='center'>\n<p>\n  </p>
 check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
 
 check( htmls("Start\n.: if( a < b && b <= c )\nEnd"), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
+check( htmls(".: .p: stuff"), " .p: stuff" );
 
 check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
 check( htmls("Start\n.! wibble\nEnd"), "Start\nwobble\nEnd" );
