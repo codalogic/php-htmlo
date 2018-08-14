@@ -259,7 +259,7 @@ yields:
 to look like htmlo directives.  For example, if you want your line to start with
 `.p: stuff`, and have the `.p:` part output, you can do:
 
-    .: .p: stuff
+    .:.p: stuff
 
 PHP functions can be called using the `.!` directive.  The
 following:
