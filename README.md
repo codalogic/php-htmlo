@@ -270,6 +270,16 @@ will effectively call the PHP function:
 
     my_func( $i, $j )
 
+By default, the function's parameters are separated by spaces.  To pass a
+string containing spaces, it is necessary to specify an alternative separator
+character.  This can be specified immediately after the `.!` token:
+
+    .!! my_func This is a string argument to the function
+
+Or:
+
+    .!/ my_func top left / top right / 0
+
 Between 0 and 5 function arguments are currently supported.
 
 Note that the function arguments (i.e. `$i` and `$j` in the above case) are

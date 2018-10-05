@@ -82,8 +82,8 @@ abstract class HtmloCore
                 $this->remove_stack_tag( 'div' );
                 return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
             }
-            else if( preg_match( '/^(\s*)\.\s*!\s*(\w.*)/', $line, $matches ) ) {   // Call function : .![a-z]
-                return $this->call_func( $matches[2] );
+            else if( preg_match( '/^(\s*)\.\s*!(\W?)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
+                return $this->call_func( $matches[3], $matches[2], $matches[4] );   // parameters are <function name>, <optional parameter separator>, <parameters>
             }
             else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
                 return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
@@ -143,18 +143,18 @@ abstract class HtmloCore
         return "<div class={$segments[1]}>";
     }
 
-    private function call_func( $line )
+    private function call_func( $fname, $optional_separator, $parameter_string )
     {
-        $segments = $this->segment( $line );
-        switch( count( $segments ) ) {
-            case 2: return $segments[1]();
-            case 4: return $segments[1]( $segments[3] );
-            case 6: return $segments[1]( $segments[3], $segments[5] );
-            case 8: return $segments[1]( $segments[3], $segments[5], $segments[7] );
-            case 10: return $segments[1]( $segments[3], $segments[5], $segments[7], $segments[9] );
-            case 12: return $segments[1]( $segments[3], $segments[5], $segments[7], $segments[9], $segments[11] );
+        $parameters = preg_split( ($optional_separator == '' ? '/\s+/' : "(\s*$optional_separator\s*)"), trim( $parameter_string ) );
+        switch( count( $parameters ) ) {
+            case 0: return $fname();
+            case 1: return $fname( $parameters[0] );
+            case 2: return $fname( $parameters[0], $parameters[1] );
+            case 3: return $fname( $parameters[0], $parameters[1], $parameters[2] );
+            case 4: return $fname( $parameters[0], $parameters[1], $parameters[2], $parameters[3] );
+            case 5: return $fname( $parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4] );
         }
-        return $segments[1]();
+        return $fname();
     }
 
     private function segment( $line )
