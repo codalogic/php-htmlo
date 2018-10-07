@@ -280,6 +280,11 @@ Or:
 
     .!/ my_func top left / top right / 0
 
+The function parameter separater can consist of multiple non-word, non-space
+characters, as in:
+
+    .!^^ my_func top left ^^ top right ^^ 0
+
 Between 0 and 5 function arguments are currently supported.
 
 Note that the function arguments (i.e. `$i` and `$j` in the above case) are

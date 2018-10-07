@@ -82,7 +82,7 @@ abstract class HtmloCore
                 $this->remove_stack_tag( 'div' );
                 return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
             }
-            else if( preg_match( '/^(\s*)\.\s*!(\W?)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
+            else if( preg_match( '/^(\s*)\.\s*!([^\w\s]*)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
                 return $this->call_func( $matches[3], $matches[2], $matches[4] );   // parameters are <function name>, <optional parameter separator>, <parameters>
             }
             else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
@@ -145,7 +145,17 @@ abstract class HtmloCore
 
     private function call_func( $fname, $optional_separator, $parameter_string )
     {
-        $parameters = preg_split( ($optional_separator == '' ? '/\s+/' : "(\s*$optional_separator\s*)"), trim( $parameter_string ) );
+
+        $parameters = array();
+        if( $optional_separator == '' )
+            $parameters = preg_split( '/\s+/', trim( $parameter_string ) );
+        else {
+            $parameters = explode( $optional_separator, $parameter_string );
+            foreach( $parameters as &$sub )
+                $sub = trim( $sub );
+
+        }
+
         switch( count( $parameters ) ) {
             case 0: return $fname();
             case 1: return $fname( $parameters[0] );
