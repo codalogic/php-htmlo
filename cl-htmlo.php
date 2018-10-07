@@ -48,44 +48,47 @@ abstract class HtmloCore
     {
         $trimmed_line = ltrim( $line );
         if( $trimmed_line != '' && $trimmed_line[0] == '.' ) {
-            if( preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
+            $cmd = $trimmed_line[1];
+            if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
-            else if( preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-
+            else if( $cmd == '-' && preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-
                 return NULL;
             }
-            else if( preg_match( '/^(\s*)\.\|([^:]*):\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
+            else if( $cmd == '|' && preg_match( '/^(\s*)\.\|([^:]*):\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
                 return $this->split_line( $matches[1], $matches[2], $matches[3] );
             }
-            else if( preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
+            else if( (ctype_alpha( $cmd ) || ctype_space( $cmd )) && preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
                 return $matches[1] . $this->tag( $matches[2] );
             }
-            else if( preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
+            else if( ($cmd == "'" || ctype_space( $cmd )) && preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
                 return $matches[1] . $this->div_class( $matches[2] );
             }
-            else if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
-                $this->remove_stack_tag( $matches[2] );
-                return $matches[1] . "</" . $matches[2] . ">";
+            else if( $cmd == '.' ) {
+                if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
+                    $this->remove_stack_tag( $matches[2] );
+                    return $matches[1] . "</" . $matches[2] . ">";
+                }
+                else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
+                    return $matches[1] . "</" . $this->unstack_tag() . ">";
+                }
+                else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
+                    $tag = $this->peek_stack_tag();
+                    return $matches[1] . "</" . $tag . ">\n" . $matches[1] . "<" . $tag . ">";
+                }
+                else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
+                    $this->remove_stack_tag( $matches[2] );
+                    return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] . $matches[3] );
+                }
+                else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
+                    $this->remove_stack_tag( 'div' );
+                    return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
+                }
             }
-            else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
-                return $matches[1] . "</" . $this->unstack_tag() . ">";
-            }
-            else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
-                $tag = $this->peek_stack_tag();
-                return $matches[1] . "</" . $tag . ">\n" . $matches[1] . "<" . $tag . ">";
-            }
-            else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
-                $this->remove_stack_tag( $matches[2] );
-                return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] . $matches[3] );
-            }
-            else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
-                $this->remove_stack_tag( 'div' );
-                return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
-            }
-            else if( preg_match( '/^(\s*)\.\s*!([^\w\s]*)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
+            else if( $cmd == '!' && preg_match( '/^(\s*)\.!([^\w\s]*)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
                 return $this->call_func( $matches[3], $matches[2], $matches[4] );   // parameters are <function name>, <optional parameter separator>, <parameters>
             }
-            else if( preg_match( '/^(\s*)\.\s*:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
+            else if( $cmd == ':' && preg_match( '/^(\s*)\.:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
                 return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
             }
         }

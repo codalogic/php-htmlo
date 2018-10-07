@@ -18,6 +18,7 @@ check( htmls('.. foo'), '</foo>' );
 check( htmls('  .. foo'), '  </foo>' );
 
 check( htmls('.foo'), '<foo>' );
+check( htmls('. foo'), '<foo>' );
 check( htmls('.foo: bar'), '<foo>bar</foo>' );
 check( htmls('.foo: bar '), '<foo>bar</foo>' );
 check( htmls('.i: .b: bar'), '<i><b>bar</b></i>' );
@@ -25,6 +26,7 @@ check( htmls('.i: .b: bar'), '<i><b>bar</b></i>' );
 check( htmls(".foo 'center left': bar"), "<foo class='center left'>bar</foo>" );
 
 check( htmls(".'center'"), "<div class='center'>" );
+check( htmls(". 'center'"), "<div class='center'>" );
 check( htmls(".'center' : special"), "<span class='center'>special</span>" );
 check( htmls(".'center bold' : special"), "<span class='center bold'>special</span>" );
 
@@ -69,7 +71,6 @@ check( htmls(".: .p: stuff"), " .p: stuff" );
 
 check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
 check( htmls("Start\n.! wibble\nEnd"), "Start\nwobble\nEnd" );
-check( htmls("Start\n. !wibble\nEnd"), "Start\nwobble\nEnd" );
 $in = 'huff';
 $out = 'puff';
 check( htmls("Start\n.!wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
