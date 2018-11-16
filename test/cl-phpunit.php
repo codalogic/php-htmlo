@@ -18,6 +18,14 @@ function check( $a, $b )
     }
 }
 
+function failed( $reason )
+{
+    global $fails, $tests;
+    $tests++;
+    $fails++;
+    print( "Not ok: $reason\n" );
+}
+
 function report()
 {
     global $fails, $tests;

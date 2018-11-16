@@ -32,6 +32,7 @@ abstract class HtmloCore
     const NAMED = 'Named';
 
     private $tag_stack = array();
+    private $is_output_enabled = true;
 
     abstract protected function emit( $output );
 
@@ -39,7 +40,7 @@ abstract class HtmloCore
     {
         foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
             $result = $this->process_line( $line );
-            if( isset( $result ) )
+            if( isset( $result ) && $this->is_output_enabled )
                 $this->emit( $result . "\n" );
         }
     }
@@ -47,9 +48,20 @@ abstract class HtmloCore
     private function process_line( $line )
     {
         $trimmed_line = ltrim( $line );
-        if( $trimmed_line != '' && $trimmed_line[0] == '.' ) {
+        if( $trimmed_line != '' && $trimmed_line[0] == '.' && strlen( $trimmed_line ) >= 2 ) {
             $cmd = $trimmed_line[1];
-            if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
+            if( $cmd == '/' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '*' ) {     // Start of block comment: ./*
+                $this->is_output_enabled = false;
+                return NULL;
+            }
+            else if( $cmd == '*' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '/' ) {     // End of block comment: .*/
+                $this->is_output_enabled = true;
+                return NULL;    // Returning NULL prevent the .*/ line being output
+            }
+            else if( ! $this->is_output_enabled ) {
+                return NULL;    // This only blocks processing lines beginning with . (e.g. prevents functions being called)
+            }
+            else if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
                 return $matches[1] . "<!-- " . $matches[2] . " -->";
             }
             else if( $cmd == '-' && preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-

@@ -150,5 +150,12 @@ check( htmls("  .|: .i: A | | .b: B"), "  <i>A</i> <b>B</b>" );
 check( htmls("  .|: This is text | .!wibble | More text"), "  This is textwobbleMore text" );
 check( htmls("  .|: This is text | | .!wibble | | More text"), "  This is text wobble More text" );
 
+// Test ./* ... .*/ block comments
+$is_block_comment_called = false;
+htmlo("Start\n./*\n.!do_not_call\n.*/\n.!must_call");
+if( ! $is_block_comment_called ) failed( 'Should have called must_call()' );
+function do_not_call() { failed( 'Should not be called do_not_call()' ); }
+function must_call() { global $is_block_comment_called; $is_block_comment_called = true; }
+
 report();
 ?>

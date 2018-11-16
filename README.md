@@ -247,6 +247,15 @@ Lines beginning with `.-` are ignored, and no output is generated, for example:
 
     .- .p: This will be ignored
 
+A block of lines can be ignored by preceding them with `./*` and following
+them with `.*/`, for example:
+
+    Included
+    ./*
+    This is ignored
+    .*/
+    This is included
+
 Content can be HTML escaped using `.:`, for example:
 
     .: if( a < b && b <= c )
