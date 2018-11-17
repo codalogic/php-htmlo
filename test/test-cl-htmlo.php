@@ -193,6 +193,21 @@ test_block_ignores();
                 ".!must_call");
         if( ! $is_block_comment_called )
             failed( 'Should have called must_call()' );
+
+        // Test multiple stars with alphanum sequence with nested ./**_a1_** ... .***_a1_**/ ignore block
+        global $is_block_comment_called;
+        $is_block_comment_called = false;
+        htmlo("Start\n" .
+                "./**_Outer1_**\n" .
+                    ".!do_not_call\n" .
+                    "./**_Inner_*\n" .
+                        ".!do_not_call\n" .
+                    ".***_Inner_/\n" .
+                    ".!do_not_call\n" .
+                ".**_Outer1_**/\n" .
+                ".!must_call");
+        if( ! $is_block_comment_called )
+            failed( 'Should have called must_call()' );
     }
 
 report();

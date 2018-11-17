@@ -54,7 +54,7 @@ abstract class HtmloCore
                 ++$this->is_output_disabled;
                 return NULL;
             }
-            else if( $cmd == '*' && preg_match( '/^\.\*+\//', $trimmed_line ) ) {     // End of block comment: .*/ (or .***/)
+            else if( $cmd == '*' && preg_match( '/^\.\*+\w*\**\//', $trimmed_line ) ) {     // End of block comment: .*/ (or .***/ or ***_A_code***/)
                 if( $this->is_output_disabled > 0 )
                     --$this->is_output_disabled;
                 return NULL;

@@ -282,6 +282,21 @@ characters do not have to match):
     .**********/
     This is included
 
+The sequence of `*` characters marking an ignore block may also include
+alphanumeric and underscore characters to act as a way of associating one end
+of an ignore block with the other.  Note, this is purely cosmetic, and it is
+not verified that the sequences in the two ends match:
+
+    Included
+    ./****_Outer_*
+        This is ignored
+        ./**_Inner_*
+            This is ignored
+        .***_Inner_*/
+        This is ignored
+    .*********_Outer_*/
+    This is included
+
 Content can be HTML escaped using `.:`, for example:
 
     .: if( a < b && b <= c )
