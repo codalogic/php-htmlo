@@ -32,7 +32,7 @@ abstract class HtmloCore
     const NAMED = 'Named';
 
     private $tag_stack = array();
-    private $is_output_disabled = false;
+    private $is_output_disabled = 0;
 
     abstract protected function emit( $output );
 
@@ -51,11 +51,12 @@ abstract class HtmloCore
         if( $trimmed_line != '' && $trimmed_line[0] == '.' && strlen( $trimmed_line ) >= 2 ) {
             $cmd = $trimmed_line[1];
             if( $cmd == '/' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '*' ) {     // Start of block comment: ./*
-                $this->is_output_disabled = true;
+                ++$this->is_output_disabled;
                 return NULL;
             }
             else if( $cmd == '*' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '/' ) {     // End of block comment: .*/
-                $this->is_output_disabled = false;
+                if( $this->is_output_disabled > 0 )
+                    --$this->is_output_disabled;
                 return NULL;    // Returning NULL prevent the .*/ line being output
             }
             else if( $this->is_output_disabled ) {

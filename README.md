@@ -256,6 +256,18 @@ them with `.*/`, for example:
     .*/
     This is included
 
+Ignore blocks can be nested:
+
+    Included
+    ./*
+        This is ignored
+        ./*
+            This is ignored
+        .*/
+        This is ignored
+    .*/
+    This is included
+
 Content can be HTML escaped using `.:`, for example:
 
     .: if( a < b && b <= c )
