@@ -32,7 +32,7 @@ abstract class HtmloCore
     const NAMED = 'Named';
 
     private $tag_stack = array();
-    private $is_output_enabled = true;
+    private $is_output_disabled = false;
 
     abstract protected function emit( $output );
 
@@ -40,7 +40,7 @@ abstract class HtmloCore
     {
         foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
             $result = $this->process_line( $line );
-            if( isset( $result ) && $this->is_output_enabled )
+            if( isset( $result ) )
                 $this->emit( $result . "\n" );
         }
     }
@@ -51,14 +51,14 @@ abstract class HtmloCore
         if( $trimmed_line != '' && $trimmed_line[0] == '.' && strlen( $trimmed_line ) >= 2 ) {
             $cmd = $trimmed_line[1];
             if( $cmd == '/' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '*' ) {     // Start of block comment: ./*
-                $this->is_output_enabled = false;
+                $this->is_output_disabled = true;
                 return NULL;
             }
             else if( $cmd == '*' && strlen( $trimmed_line ) >= 3 && $trimmed_line[2] == '/' ) {     // End of block comment: .*/
-                $this->is_output_enabled = true;
+                $this->is_output_disabled = false;
                 return NULL;    // Returning NULL prevent the .*/ line being output
             }
-            else if( ! $this->is_output_enabled ) {
+            else if( $this->is_output_disabled ) {
                 return NULL;    // This only blocks processing lines beginning with . (e.g. prevents functions being called)
             }
             else if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
@@ -104,6 +104,9 @@ abstract class HtmloCore
                 return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
             }
         }
+
+        if( $this->is_output_disabled )
+            return NULL;
 
         return $line;
     }
