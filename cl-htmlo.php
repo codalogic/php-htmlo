@@ -57,7 +57,7 @@ abstract class HtmloCore
             else if( $cmd == '*' && preg_match( '/^\.\*+\//', $trimmed_line ) ) {     // End of block comment: .*/ (or .***/)
                 if( $this->is_output_disabled > 0 )
                     --$this->is_output_disabled;
-                return NULL;    // Returning NULL prevent the .*/ line being output
+                return NULL;
             }
             else if( $this->is_output_disabled ) {
                 return NULL;    // This only blocks processing lines beginning with . (e.g. prevents functions being called)
