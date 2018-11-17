@@ -268,6 +268,20 @@ Ignore blocks can be nested:
     .*/
     This is included
 
+Multiple `*` characters are permitted in the token marking the beginning and
+end of ignore blocks in order to make them clearer (the number of `*`
+characters do not have to match):
+
+    Included
+    ./*****
+        This is ignored
+        ./***
+            This is ignored
+        .****/
+        This is ignored
+    .**********/
+    This is included
+
 Content can be HTML escaped using `.:`, for example:
 
     .: if( a < b && b <= c )

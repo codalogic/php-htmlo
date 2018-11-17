@@ -178,6 +178,21 @@ test_block_ignores();
                 ".!must_call");
         if( ! $is_block_comment_called )
             failed( 'Should have called must_call()' );
+
+        // Test multiple stars with nested ./**** ... .*****/ ignore block
+        global $is_block_comment_called;
+        $is_block_comment_called = false;
+        htmlo("Start\n" .
+                "./****\n" .
+                    ".!do_not_call\n" .
+                    "./***\n" .
+                        ".!do_not_call\n" .
+                    ".***/\n" .
+                    ".!do_not_call\n" .
+                ".****/\n" .
+                ".!must_call");
+        if( ! $is_block_comment_called )
+            failed( 'Should have called must_call()' );
     }
 
 report();
