@@ -191,7 +191,7 @@ yields:
     <a href='http://codalogic.com'>My home page</a>
 
 If a URL is not specified as a parameter and the contents of the directive
-is an http or https URL then the contents is used for the href parameter.
+is an http or https URL then the contents is used for the href parameter:
 
     .a: http://codalogic.com
 
