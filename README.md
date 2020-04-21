@@ -182,13 +182,22 @@ in the middle of a line being processed.  See below for details.
 
 Certain HTML elements have special handling.
 
-In the case of the `a` element:
+In the case of the `a` element the linked URL gets special treatment. Thus:
 
     .a http://codalogic.com: My home page
 
 yields:
 
     <a href='http://codalogic.com'>My home page</a>
+
+If a URL is not specified as a parameter and the contents of the directive
+is an http or https URL then the contents is used for the href parameter.
+
+    .a: http://codalogic.com
+
+yields:
+
+    <a href='http://codalogic.com'>http://codalogic.com</a>
 
 As a CSS class is always in single quotes, both the following:
 

@@ -227,6 +227,11 @@ abstract class HtmloCore
     {
         $output = '';
         $href = $this->find_token( $segments );
+        if( $href == '' ) {
+            $content = $this->find_content( $segments );
+            if( preg_match( '|^\s*https?://|', $content ) )
+                $href = trim( $content );
+        }
         if( $href != '' )
             $output .= " href='" . $href . "'";
         return $output;

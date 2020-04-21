@@ -46,6 +46,9 @@ check( htmls(".a mailto:nowhere@example.com: foo"), "<a href='mailto:nowhere@exa
 check( htmls(".a href( http://codalogic.com/index.php ) : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
 check( htmls(".a # : foo"), "<a href='#'>foo</a>" );
 check( htmls(".a #bar : foo"), "<a href='#bar'>foo</a>" );
+check( htmls(".a: http://codalogic.com "), "<a href='http://codalogic.com'>http://codalogic.com</a>" );
+check( htmls(".a: https://codalogic.com "), "<a href='https://codalogic.com'>https://codalogic.com</a>" );
+check( htmls(".a: Not a URL "), "<a>Not a URL</a>" );
 
 check( htmls(".a name(bar) :"), "<a name='bar' />" );
 
