@@ -6,8 +6,6 @@ function check( $a, $b )
     global $fails, $tests;
     $tests++;
 
-    $a = rtrim( $a );
-    $b = rtrim( $b );
     if( $a === $b ) {
         print( "    ok: $a\n" );
     }
