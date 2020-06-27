@@ -2,106 +2,106 @@
 include( '../cl-htmlo.php' );
 include( 'cl-phpunit.php' );
 
-check( htmls('ab'), 'ab' );
-check( htmls("ab\ncd"), "ab\ncd" );
-check( htmls("ab\n<i>cd</i>"), "ab\n<i>cd</i>" );
+checkrtrim( htmls( 'ab' ), 'ab' );
+checkrtrim( htmls( "ab\ncd" ), "ab\ncd" );
+checkrtrim( htmls( "ab\n<i>cd</i>" ), "ab\n<i>cd</i>" );
 
-check( htmls('.# foo'), '<!-- foo -->' );
-check( htmls("ab\n .# foo"), "ab\n <!-- foo -->" );
-check( htmls('  .# foo'), '  <!-- foo -->' );
+checkrtrim( htmls( '.# foo' ), '<!-- foo -->' );
+checkrtrim( htmls( "ab\n .# foo" ), "ab\n <!-- foo -->" );
+checkrtrim( htmls( '  .# foo' ), '  <!-- foo -->' );
 
-check( htmls('.- foo'), '' );
-check( htmls("ab\n .- foo\ncd"), "ab\ncd\n" );
-check( htmls('  .- foo'), '' );
+checkrtrim( htmls( '.- foo' ), '' );
+checkrtrim( htmls( "ab\n .- foo\ncd" ), "ab\ncd" );
+checkrtrim( htmls( '  .- foo' ), '' );
 
-check( htmls('.. foo'), '</foo>' );
-check( htmls('  .. foo'), '  </foo>' );
+checkrtrim( htmls( '.. foo' ), '</foo>' );
+checkrtrim( htmls( '  .. foo' ), '  </foo>' );
 
-check( htmls('.foo'), '<foo>' );
-check( htmls('. foo'), '<foo>' );
-check( htmls('.foo: bar'), '<foo>bar</foo>' );
-check( htmls('.foo: bar '), '<foo>bar</foo>' );
-check( htmls('.i: .b: bar'), '<i><b>bar</b></i>' );
+checkrtrim( htmls( '.foo' ), '<foo>' );
+checkrtrim( htmls( '. foo' ), '<foo>' );
+checkrtrim( htmls( '.foo: bar' ), '<foo>bar</foo>' );
+checkrtrim( htmls( '.foo: bar ' ), '<foo>bar</foo>' );
+checkrtrim( htmls( '.i: .b: bar' ), '<i><b>bar</b></i>' );
 
-check( htmls(".foo 'center left': bar"), "<foo class='center left'>bar</foo>" );
+checkrtrim( htmls( ".foo 'center left': bar" ), "<foo class='center left'>bar</foo>" );
 
-check( htmls(".'center'"), "<div class='center'>" );
-check( htmls(". 'center'"), "<div class='center'>" );
-check( htmls(".'center' : special"), "<span class='center'>special</span>" );
-check( htmls(".'center bold' : special"), "<span class='center bold'>special</span>" );
+checkrtrim( htmls( ".'center'" ), "<div class='center'>" );
+checkrtrim( htmls( ". 'center'" ), "<div class='center'>" );
+checkrtrim( htmls( ".'center' : special" ), "<span class='center'>special</span>" );
+checkrtrim( htmls( ".'center bold' : special" ), "<span class='center bold'>special</span>" );
 
-check( htmls('.img alt( a minor issue )'), "<img alt='a minor issue'>" );
-check( htmls('.img alt( a minor issue ):'), "<img alt='a minor issue' />" );
-check( htmls('.img images/src.png:'), "<img src='images/src.png' />" );
-check( htmls('.img images/src.png 0:'), "<img src='images/src.png' border='0' />" );
-check( htmls('.img images/src.png 0 alt( a minor issue ):'), "<img src='images/src.png' border='0' alt='a minor issue' />" );
-check( htmls('.img src(images/src.png):'), "<img src='images/src.png' />" );
+checkrtrim( htmls( '.img alt( a minor issue )' ), "<img alt='a minor issue'>" );
+checkrtrim( htmls( '.img alt( a minor issue ):' ), "<img alt='a minor issue' />" );
+checkrtrim( htmls( '.img images/src.png:' ), "<img src='images/src.png' />" );
+checkrtrim( htmls( '.img images/src.png 0:' ), "<img src='images/src.png' border='0' />" );
+checkrtrim( htmls( '.img images/src.png 0 alt( a minor issue ):' ), "<img src='images/src.png' border='0' alt='a minor issue' />" );
+checkrtrim( htmls( '.img src(images/src.png):' ), "<img src='images/src.png' />" );
 
-check( htmls('.a ./ : foo'), "<a href='./'>foo</a>" );
-check( htmls('.a /index.php : foo'), "<a href='/index.php'>foo</a>" );
-check( htmls(".a 'bold' /index.php : foo"), "<a class='bold' href='/index.php'>foo</a>" );
-check( htmls(".a http://codalogic.com/index.php : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
-check( htmls(".a https://codalogic.com/index.php: foo"), "<a href='https://codalogic.com/index.php'>foo</a>" );
-check( htmls(".a mailto:nowhere@example.com: foo"), "<a href='mailto:nowhere@example.com'>foo</a>" );
-check( htmls(".a href( http://codalogic.com/index.php ) : foo"), "<a href='http://codalogic.com/index.php'>foo</a>" );
-check( htmls(".a # : foo"), "<a href='#'>foo</a>" );
-check( htmls(".a #bar : foo"), "<a href='#bar'>foo</a>" );
-check( htmls(".a: http://codalogic.com "), "<a href='http://codalogic.com'>http://codalogic.com</a>" );
-check( htmls(".a: https://codalogic.com "), "<a href='https://codalogic.com'>https://codalogic.com</a>" );
-check( htmls(".a: Not a URL "), "<a>Not a URL</a>" );
+checkrtrim( htmls( '.a ./ : foo' ), "<a href='./'>foo</a>" );
+checkrtrim( htmls( '.a /index.php : foo' ), "<a href='/index.php'>foo</a>" );
+checkrtrim( htmls( ".a 'bold' /index.php : foo" ), "<a class='bold' href='/index.php'>foo</a>" );
+checkrtrim( htmls( ".a http://codalogic.com/index.php : foo" ), "<a href='http://codalogic.com/index.php'>foo</a>" );
+checkrtrim( htmls( ".a https://codalogic.com/index.php: foo" ), "<a href='https://codalogic.com/index.php'>foo</a>" );
+checkrtrim( htmls( ".a mailto:nowhere@example.com: foo" ), "<a href='mailto:nowhere@example.com'>foo</a>" );
+checkrtrim( htmls( ".a href( http://codalogic.com/index.php ) : foo" ), "<a href='http://codalogic.com/index.php'>foo</a>" );
+checkrtrim( htmls( ".a # : foo" ), "<a href='#'>foo</a>" );
+checkrtrim( htmls( ".a #bar : foo" ), "<a href='#bar'>foo</a>" );
+checkrtrim( htmls( ".a: http://codalogic.com " ), "<a href='http://codalogic.com'>http://codalogic.com</a>" );
+checkrtrim( htmls( ".a: https://codalogic.com " ), "<a href='https://codalogic.com'>https://codalogic.com</a>" );
+checkrtrim( htmls( ".a: Not a URL " ), "<a>Not a URL</a>" );
 
-check( htmls(".a name(bar) :"), "<a name='bar' />" );
+checkrtrim( htmls( ".a name(bar) :" ), "<a name='bar' />" );
 
-check( htmls(".a 'bold' /index.php : .img images/src.png 0:"), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
+checkrtrim( htmls( ".a 'bold' /index.php : .img images/src.png 0:" ), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
 
-check( htmls('  ...foo'), "  </foo>\n  <foo>" );
+checkrtrim( htmls( '  ...foo' ), "  </foo>\n  <foo>" );
 
-check( htmls(".table\n.."), "<table>\n</table>" );
-check( htmls(".table\n    .."), "<table>\n    </table>" );
-check( htmls(".table 'center'\n    .."), "<table class='center'>\n    </table>" );
+checkrtrim( htmls( ".table\n.." ), "<table>\n</table>" );
+checkrtrim( htmls( ".table\n    .." ), "<table>\n    </table>" );
+checkrtrim( htmls( ".table 'center'\n    .." ), "<table class='center'>\n    </table>" );
 
-check( htmls(".'center'\n.."), "<div class='center'>\n</div>" );
-check( htmls(".'center'\n.p\n..\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
-check( htmls(".'center'\n.p\n..p\n.."), "<div class='center'>\n<p>\n</p>\n</div>" );
-check( htmls(".'center'\n.p\n  ...p\n..\n.."), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
+checkrtrim( htmls( ".'center'\n.." ), "<div class='center'>\n</div>" );
+checkrtrim( htmls( ".'center'\n.p\n..\n.." ), "<div class='center'>\n<p>\n</p>\n</div>" );
+checkrtrim( htmls( ".'center'\n.p\n..p\n.." ), "<div class='center'>\n<p>\n</p>\n</div>" );
+checkrtrim( htmls( ".'center'\n.p\n  ...p\n..\n.." ), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
 
-check( htmls(".'center'\n.p\n  ...\n..\n.."), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
+checkrtrim( htmls( ".'center'\n.p\n  ...\n..\n.." ), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
 
-check( htmls(".'center'\n...'left'\n.."), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
+checkrtrim( htmls( ".'center'\n...'left'\n.." ), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
 
-check( htmls("Start\n.: if( a < b && b <= c )\nEnd"), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
-check( htmls(".: .p: stuff"), " .p: stuff" );
+checkrtrim( htmls( "Start\n.: if( a < b && b <= c )\nEnd" ), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
+checkrtrim( htmls( ".: .p: stuff" ), " .p: stuff" );
 
-check( htmls("Start\n.!wibble\nEnd"), "Start\nwobble\nEnd" );
-check( htmls("Start\n.! wibble\nEnd"), "Start\nwobble\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble\nEnd" ), "Start\nwobble\nEnd" );
+checkrtrim( htmls( "Start\n.! wibble\nEnd" ), "Start\nwobble\nEnd" );
 $in = 'huff';
 $out = 'puff';
-check( htmls("Start\n.!wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
-check( htmls("Start\n.!wibble2 $in $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
-check( htmls("Start\n.!wibble3 $in $out f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
-check( htmls("Start\n.!wibble4 $in $out f3 f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
-check( htmls("Start\n.! wibble5 $in $out f3 f4 f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
-check( htmls("Start\n.!!wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
-check( htmls("Start\n.!!wibble2 $in ! $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
-check( htmls("Start\n.!!wibble3 $in ! $out ! f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
-check( htmls("Start\n.!!wibble4 $in ! $out ! f3 ! f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
-check( htmls("Start\n.!!wibble5 $in ! $out ! f3 ! f4 ! f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
-check( htmls("Start\n.!! wibble1 This is a string \nEnd"), "Start\nwobbleThis is a string\nEnd" );
-check( htmls("Start\n.!! wibble2 This is a string ! 2 \nEnd"), "Start\nwobbleThis is a string2\nEnd" );
-check( htmls("Start\n.!/wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
-check( htmls("Start\n.!/wibble2 $in / $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
-check( htmls("Start\n.!/wibble3 $in / $out / f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
-check( htmls("Start\n.!/wibble4 $in / $out / f3 / f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
-check( htmls("Start\n.!/wibble5 $in / $out / f3 / f4 / f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
-check( htmls("Start\n.!/ wibble1 This is a string \nEnd"), "Start\nwobbleThis is a string\nEnd" );
-check( htmls("Start\n.!/ wibble2 This is a string / 2 \nEnd"), "Start\nwobbleThis is a string2\nEnd" );
-check( htmls("Start\n.!^^ wibble1 $in\nEnd"), "Start\nwobblehuff\nEnd" );
-check( htmls("Start\n.!^^ wibble2 $in ^^ $out\nEnd"), "Start\nwobblehuffpuff\nEnd" );
-check( htmls("Start\n.!^^ wibble3 $in ^^ $out ^^ f3\nEnd"), "Start\nwobblehuffpufff3\nEnd" );
-check( htmls("Start\n.!^^ wibble4 $in ^^ $out ^^ f3 ^^ f4\nEnd"), "Start\nwobblehuffpufff3f4\nEnd" );
-check( htmls("Start\n.!^^ wibble5 $in ^^ $out ^^ f3 ^^ f4 ^^ f5\nEnd"), "Start\nwobblehuffpufff3f4f5\nEnd" );
-check( htmls("Start\n.!^^wibble1 This is a string \nEnd"), "Start\nwobbleThis is a string\nEnd" );
-check( htmls("Start\n.!^^wibble2 This is a string ^^ 2 \nEnd"), "Start\nwobbleThis is a string2\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble1 $in\nEnd" ), "Start\nwobblehuff\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble2 $in $out\nEnd" ), "Start\nwobblehuffpuff\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble3 $in $out f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble4 $in $out f3 f4\nEnd" ), "Start\nwobblehuffpufff3f4\nEnd" );
+checkrtrim( htmls( "Start\n.! wibble5 $in $out f3 f4 f5\nEnd" ), "Start\nwobblehuffpufff3f4f5\nEnd" );
+checkrtrim( htmls( "Start\n.!!wibble1 $in\nEnd" ), "Start\nwobblehuff\nEnd" );
+checkrtrim( htmls( "Start\n.!!wibble2 $in ! $out\nEnd" ), "Start\nwobblehuffpuff\nEnd" );
+checkrtrim( htmls( "Start\n.!!wibble3 $in ! $out ! f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
+checkrtrim( htmls( "Start\n.!!wibble4 $in ! $out ! f3 ! f4\nEnd" ), "Start\nwobblehuffpufff3f4\nEnd" );
+checkrtrim( htmls( "Start\n.!!wibble5 $in ! $out ! f3 ! f4 ! f5\nEnd" ), "Start\nwobblehuffpufff3f4f5\nEnd" );
+checkrtrim( htmls( "Start\n.!! wibble1 This is a string \nEnd" ), "Start\nwobbleThis is a string\nEnd" );
+checkrtrim( htmls( "Start\n.!! wibble2 This is a string ! 2 \nEnd" ), "Start\nwobbleThis is a string2\nEnd" );
+checkrtrim( htmls( "Start\n.!/wibble1 $in\nEnd" ), "Start\nwobblehuff\nEnd" );
+checkrtrim( htmls( "Start\n.!/wibble2 $in / $out\nEnd" ), "Start\nwobblehuffpuff\nEnd" );
+checkrtrim( htmls( "Start\n.!/wibble3 $in / $out / f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
+checkrtrim( htmls( "Start\n.!/wibble4 $in / $out / f3 / f4\nEnd" ), "Start\nwobblehuffpufff3f4\nEnd" );
+checkrtrim( htmls( "Start\n.!/wibble5 $in / $out / f3 / f4 / f5\nEnd" ), "Start\nwobblehuffpufff3f4f5\nEnd" );
+checkrtrim( htmls( "Start\n.!/ wibble1 This is a string \nEnd" ), "Start\nwobbleThis is a string\nEnd" );
+checkrtrim( htmls( "Start\n.!/ wibble2 This is a string / 2 \nEnd" ), "Start\nwobbleThis is a string2\nEnd" );
+checkrtrim( htmls( "Start\n.!^^ wibble1 $in\nEnd" ), "Start\nwobblehuff\nEnd" );
+checkrtrim( htmls( "Start\n.!^^ wibble2 $in ^^ $out\nEnd" ), "Start\nwobblehuffpuff\nEnd" );
+checkrtrim( htmls( "Start\n.!^^ wibble3 $in ^^ $out ^^ f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
+checkrtrim( htmls( "Start\n.!^^ wibble4 $in ^^ $out ^^ f3 ^^ f4\nEnd" ), "Start\nwobblehuffpufff3f4\nEnd" );
+checkrtrim( htmls( "Start\n.!^^ wibble5 $in ^^ $out ^^ f3 ^^ f4 ^^ f5\nEnd" ), "Start\nwobblehuffpufff3f4f5\nEnd" );
+checkrtrim( htmls( "Start\n.!^^wibble1 This is a string \nEnd" ), "Start\nwobbleThis is a string\nEnd" );
+checkrtrim( htmls( "Start\n.!^^wibble2 This is a string ^^ 2 \nEnd" ), "Start\nwobbleThis is a string2\nEnd" );
 
 echo "Visually check echo is: Start\nwobblehuffpufff3f4f5\nEnd\n";
 htmlo("Start\n.!wibble5 $in $out f3 f4 f5\nEnd\n");
@@ -143,15 +143,15 @@ function wibble5echo( $what1, $what2, $what3, $what4, $what5 )
     echo( 'wobbleecho' . $what1 . $what2 . $what3 . $what4 . $what5 . "\n" );
 }
 
-check( htmls("  .|: .i: A | .b: B"), "  <i>A</i><b>B</b>" );
-check( htmls("  .|^: .i: A ^ .b: B ^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
-check( htmls("  .|^^: .i: A ^^ .b: B ^^ .u: U"), "  <i>A</i><b>B</b><u>U</u>" );
-check( htmls("  .tr: .|: .td: A | .td: B | .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
-check( htmls("  .tr: .|~~: .td: A ~~ .td: B ~~ .td: C"), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
-check( htmls("  .|: .i: A | | .b: B"), "  <i>A</i> <b>B</b>" );
+checkrtrim( htmls( "  .|: .i: A | .b: B" ), "  <i>A</i><b>B</b>" );
+checkrtrim( htmls( "  .|^: .i: A ^ .b: B ^ .u: U" ), "  <i>A</i><b>B</b><u>U</u>" );
+checkrtrim( htmls( "  .|^^: .i: A ^^ .b: B ^^ .u: U" ), "  <i>A</i><b>B</b><u>U</u>" );
+checkrtrim( htmls( "  .tr: .|: .td: A | .td: B | .td: C" ), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
+checkrtrim( htmls( "  .tr: .|~~: .td: A ~~ .td: B ~~ .td: C" ), "  <tr><td>A</td><td>B</td><td>C</td></tr>" );
+checkrtrim( htmls( "  .|: .i: A | | .b: B" ), "  <i>A</i> <b>B</b>" );
 
-check( htmls("  .|: This is text | .!wibble | More text"), "  This is textwobbleMore text" );
-check( htmls("  .|: This is text | | .!wibble | | More text"), "  This is text wobble More text" );
+checkrtrim( htmls( "  .|: This is text | .!wibble | More text" ), "  This is textwobbleMore text" );
+checkrtrim( htmls( "  .|: This is text | | .!wibble | | More text" ), "  This is text wobble More text" );
 
 test_block_ignores();
     $is_block_comment_called = false;
