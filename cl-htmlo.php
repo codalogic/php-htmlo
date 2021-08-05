@@ -86,8 +86,8 @@ abstract class HtmloCore
                     return $matches[1] . "</" . $this->unstack_tag() . ">";
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
-                    $tag = $this->peek_stack_tag();
-                    return $matches[1] . "</" . $tag . ">\n" . $matches[1] . "<" . $tag . ">";
+                    list( $name, $tag ) = $this->peek_stack_tag_pair();
+                    return $matches[1] . "</" . $name . ">\n" . $matches[1] . $tag;
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
                     $this->remove_stack_tag( $matches[2] );
@@ -147,7 +147,7 @@ abstract class HtmloCore
         }
         else {
             $output .= '>';
-            $this->stack_tag( $segments[1] );
+            $this->stack_tag( $segments[1], $output );
         }
         return $output;
     }
@@ -158,8 +158,9 @@ abstract class HtmloCore
         if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
             return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
         }
-        $this->stack_tag( 'div' );
-        return "<div class={$segments[1]}>";
+        $output = "<div class={$segments[1]}>";
+        $this->stack_tag( 'div', $output );
+        return $output;
     }
 
     private function call_func( $fname, $optional_separator, $parameter_string )
@@ -309,32 +310,32 @@ abstract class HtmloCore
 
     static $non_stackable_tags = array( 'img', 'br', 'hr' );
 
-    private function stack_tag( $tag )
+    private function stack_tag( $name, $tag )
     {
-        if( ! in_array( $tag, self::$non_stackable_tags ) ) {
-            $this->tag_stack[] = $tag;
+        if( ! in_array( $name, self::$non_stackable_tags ) ) {
+            $this->tag_stack[] = array( $name, $tag );
         }
     }
 
     private function unstack_tag()
     {
         if( count( $this->tag_stack ) > 0 ) {
-            return array_pop( $this->tag_stack );
+            return array_pop( $this->tag_stack )[0];
         }
         return '';
     }
 
-    private function peek_stack_tag()
+    private function peek_stack_tag_pair()
     {
         if( count( $this->tag_stack ) > 0 ) {
             return $this->tag_stack[count( $this->tag_stack )-1];
         }
-        return '';
+        return array( '', '' );
     }
 
     private function remove_stack_tag( $tag )
     {
-        if( count( $this->tag_stack ) > 0 && $this->tag_stack[count( $this->tag_stack )-1] == $tag ) {
+        if( count( $this->tag_stack ) > 0 && $this->tag_stack[count( $this->tag_stack )-1][0] == $tag ) {
             array_pop( $this->tag_stack );
         }
     }

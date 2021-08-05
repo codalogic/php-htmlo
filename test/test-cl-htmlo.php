@@ -67,7 +67,10 @@ checkrtrim( htmls( ".'center'\n.p\n  ...p\n..\n.." ), "<div class='center'>\n<p>
 
 checkrtrim( htmls( ".'center'\n.p\n  ...\n..\n.." ), "<div class='center'>\n<p>\n  </p>\n  <p>\n</p>\n</div>" );
 
+checkrtrim( htmls( ".'center'\n...\n.." ), "<div class='center'>\n</div>\n<div class='center'>\n</div>" );
 checkrtrim( htmls( ".'center'\n...'left'\n.." ), "<div class='center'>\n</div>\n<div class='left'>\n</div>" );
+
+checkrtrim( htmls( ".td valign(top)\n...\n.." ), "<td valign='top'>\n</td>\n<td valign='top'>\n</td>" );
 
 checkrtrim( htmls( "Start\n.: if( a < b && b <= c )\nEnd" ), "Start\n if( a &lt; b &amp;&amp; b &lt;= c )\nEnd" );
 checkrtrim( htmls( ".: .p: stuff" ), " .p: stuff" );
