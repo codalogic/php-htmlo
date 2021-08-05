@@ -320,7 +320,8 @@ abstract class HtmloCore
     private function unstack_tag()
     {
         if( count( $this->tag_stack ) > 0 ) {
-            return array_pop( $this->tag_stack )[0];
+            $top = array_pop( $this->tag_stack );
+            return $top[0];
         }
         return '';
     }
