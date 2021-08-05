@@ -135,6 +135,23 @@ will yield:
         More Text
     </p>
 
+and:
+
+    .'my-class'
+        Text
+    ...
+        More Text
+    ..
+
+will yield:
+
+    <div class='my-class'>
+        Text
+    </div>
+    <div class='my-class'>
+        More Text
+    </div>
+
 Note that each call to the `htmlo()` or
 `htmls()` functions maintains their own tag stack.  Therefore tag nesting
 can not be pushed in one function call and automatically popped in
