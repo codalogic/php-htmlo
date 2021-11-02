@@ -155,7 +155,7 @@ abstract class HtmloCore
     private function div_class( $line )
     {
         $segments = $this->segment( $line );
-        if( count( $segments >= 3 ) && $segments[count($segments)-2] == ':' ) {
+        if( count( $segments ) >= 3 && $segments[count($segments)-2] == ':' ) {
             return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
         }
         $output = "<div class={$segments[1]}>";
@@ -298,7 +298,7 @@ abstract class HtmloCore
 
     private function has_content( &$segments )
     {
-        return count( $segments >= 3 ) && $segments[count($segments)-2] == ':';
+        return count( $segments ) >= 3 && $segments[count($segments)-2] == ':';
     }
 
     private function find_content( &$segments )
