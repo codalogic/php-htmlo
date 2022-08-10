@@ -91,7 +91,7 @@ abstract class HtmloCore
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
                     $this->remove_stack_tag( $matches[2] );
-                    return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] . $matches[3] );
+                    return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] );
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
                     $this->remove_stack_tag( 'div' );
