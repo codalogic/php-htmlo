@@ -132,6 +132,8 @@ abstract class HtmloCore
     private function tag( $line )
     {
         $segments = $this->segment( $line );
+        if( $segments[1] == 'br' )
+            return $this->br_tag( $segments );
         $output = '<' . $segments[1];
         $class = $this->find_class( $segments );
         if( $class != '' )
@@ -215,12 +217,20 @@ abstract class HtmloCore
         return False;
     }
 
+    private function br_tag( &$segments )
+    {
+        $content = $this->find_content( $segments );
+        return $content . "<br />";
+    }
+
     private function tag_specific_args( &$segments )
     {
         if( $segments[1] == 'a' )
             return $this->address_args( $segments );
         else if( $segments[1] == 'img' )
             return $this->img_args( $segments );
+        else if( $segments[1] == 'br' )
+            return $this->br_args( $segments );
         return '';
     }
 

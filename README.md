@@ -252,6 +252,14 @@ will yield:
 
     <img src='images/logo.png' alt='Company logo' />
 
+For `br` elements:
+
+    .br: A line
+
+will output:
+
+    A line<br />
+
 As mentioned above, `htmlo` directives can form the content of a directive,
 so you can do:
 
