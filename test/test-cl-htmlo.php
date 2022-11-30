@@ -54,7 +54,9 @@ checkrtrim( htmls( ".a name(bar) :" ), "<a name='bar' />" );
 
 checkrtrim( htmls( ".a 'bold' /index.php : .img images/src.png 0:" ), "<a class='bold' href='/index.php'><img src='images/src.png' border='0' /></a>" );
 
+checkrtrim( htmls( ".br:" ), "<br />" );
 checkrtrim( htmls( ".br: A line" ), "A line<br />" );
+checkrtrim( htmls( ".br: .a http://codalogic.com: .img images/logo.png alt( Company logo ):" ), "<a href='http://codalogic.com'><img src='images/logo.png' alt='Company logo' /></a><br />" );
 
 checkrtrim( htmls( '  ...foo' ), "  </foo>\n  <foo>" );
 

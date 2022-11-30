@@ -269,6 +269,14 @@ yielding:
 
     <a href='http://codalogic.com'><img src='images/logo.png' alt='Company logo' /></a>
 
+And:
+
+    .br: .a http://codalogic.com: .img images/logo.png alt( Company logo ):
+
+yielding:
+
+    <a href='http://codalogic.com'><img src='images/logo.png' alt='Company logo' /></a><br />
+
 HTML comments can be output by preceding them with `.#`, for example:
 
     .# My comment

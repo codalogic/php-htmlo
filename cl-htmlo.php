@@ -219,7 +219,10 @@ abstract class HtmloCore
 
     private function br_tag( &$segments )
     {
-        $content = $this->find_content( $segments );
+        $content = '';
+        if( $this->has_content( $segments ) ) {
+            $content = $this->process_line( $this->find_content( $segments ) );
+        }
         return $content . "<br />";
     }
 
