@@ -41,7 +41,7 @@ abstract class HtmloCore
         foreach( preg_split( '/\r\n|\n|\r/', $input ) as $line ) {
             $result = $this->process_line( $line );
             if( isset( $result ) )
-                $this->emit( $result . "\n" );
+                $this->emit( "\n" );
         }
     }
 
@@ -62,71 +62,77 @@ abstract class HtmloCore
             else if( $this->is_output_disabled ) {
                 return NULL;    // This only blocks processing lines beginning with . (e.g. prevents functions being called)
             }
-            else if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
-                return $matches[1] . "<!-- " . $matches[2] . " -->";
-            }
             else if( $cmd == '-' && preg_match( '/^(\s*)\.-/', $line, $matches ) ) {       // Ignored line : .-
                 return NULL;
             }
+            else if( $cmd == '#' && preg_match( '/^(\s*)\.#\s*(.*)/', $line, $matches ) ) {     // Comments : .#
+                $this->emit( $matches[1] . "<!-- " . $matches[2] . " -->" );
+            }
             else if( $cmd == '|' && preg_match( '/^(\s*)\.\|([^:]*):\s*(.*)/', $line, $matches ) ) {       // Split line : .|, e.g. .tr .|| .td A | .td B | .td C
-                return $this->split_line( $matches[1], $matches[2], $matches[3] );
+                $this->emit( $matches[1] );
+                $this->split_line( $matches[2], $matches[3] );
             }
             else if( (ctype_alpha( $cmd ) || ctype_space( $cmd )) && preg_match( '/^(\s*)\.\s*(\w.*)/', $line, $matches ) ) {   // Start tags : .[a-z]
-                return $matches[1] . $this->tag( $matches[2] );
+                $this->emit( $matches[1] );
+                $this->tag( $matches[2] );
             }
             else if( ($cmd == "'" || ctype_space( $cmd )) && preg_match( '/^(\s*)\.\s*(\'.*)/', $line, $matches ) ) {   // class : .'
-                return $matches[1] . $this->div_class( $matches[2] );
+                $this->emit( $matches[1] );
+                $this->div_class( $matches[2] );
             }
             else if( $cmd == '.' ) {
                 if( preg_match( '/^(\s*)\.\.\s*(\w+)/', $line, $matches ) ) {   // End tags : .. tag
                     $this->remove_stack_tag( $matches[2] );
-                    return $matches[1] . "</" . $matches[2] . ">";
+                    $this->emit( $matches[1] . "</" . $matches[2] . ">" );
                 }
                 else if( preg_match( '/^(\s*)\.\.\s*$/', $line, $matches ) ) {   // Automatic end tag : ..
-                    return $matches[1] . "</" . $this->unstack_tag() . ">";
+                    $this->emit( $matches[1] . "</" . $this->unstack_tag() . ">" );
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*$/', $line, $matches ) ) {   // Automatic end & reopen tag : ...
                     list( $name, $tag ) = $this->peek_stack_tag_pair();
-                    return $matches[1] . "</" . $name . ">\n" . $matches[1] . $tag;
+                    $this->emit( $matches[1] . "</" . $name . ">\n" . $matches[1] . $tag );
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*(\w.*)/', $line, $matches ) ) {   // End followed by start tag : ...[a-z]
                     $this->remove_stack_tag( $matches[2] );
-                    return $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] . $this->tag( $matches[2] );
+                    $this->emit( $matches[1] . "</" . $matches[2] . ">\n" . $matches[1] );
+                    $this->tag( $matches[2] );
                 }
                 else if( preg_match( '/^(\s*)\.\.\.\s*(\'.*)/', $line, $matches ) ) {   // End tag followed by class : ...'
                     $this->remove_stack_tag( 'div' );
-                    return $matches[1] . "</div>\n" . $matches[1] . $this->div_class( $matches[2] );
+                    $this->emit( $matches[1] . "</div>\n" . $matches[1] );
+                    $this->div_class( $matches[2] );
                 }
             }
             else if( $cmd == '!' && preg_match( '/^(\s*)\.!([^\w\s]*)\s*(\w*)\s*(.*)/', $line, $matches ) ) {   // Call function : .![a-z] opt-args or .!/[a-z] opt-args
-                return $this->call_func( $matches[3], $matches[2], $matches[4] );   // parameters are <function name>, <optional parameter separator>, <parameters>
+                $this->call_func( $matches[3], $matches[2], $matches[4] );   // parameters are <function name>, <optional parameter separator>, <parameters>
             }
             else if( $cmd == ':' && preg_match( '/^(\s*)\.:(.*)/', $line, $matches ) ) {   // HTML escape output : .:
-                return $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
+                $this->emit( $matches[1] . htmlentities( $matches[2], ENT_COMPAT | ENT_HTML401, 'UTF-8', false ) );
             }
+            else {
+                $this->emit( $line );
+            }
+            return '';
         }
 
         if( $this->is_output_disabled )
             return NULL;
 
-        return $line;
+        $this->emit( $line );
+        return '';
     }
 
-    private function split_line( $indent, $separator, $directives )
+    private function split_line( $separator, $directives )
     {
         if( $separator == '' )
             $separator = '|';
-        $line = '';
         foreach( explode( $separator, $directives ) as $sub_line ) {
-            if( preg_match( '/^\s*$/', $sub_line ) ) // If all whitespace...just add to result
-                $line .= $sub_line;
+            if( preg_match( '/^\s*$/', $sub_line ) ) // If all whitespace...just emit result
+                $this->emit( $sub_line );
             else {
-                $result = $this->process_line( trim( $sub_line ) );
-                if( isset( $result ) )
-                    $line .= $result;
+                $this->process_line( trim( $sub_line ) );
             }
         }
-        return $indent . $line;
     }
 
     private function tag( $line )
@@ -141,28 +147,44 @@ abstract class HtmloCore
         $output .= $this->tag_specific_args( $segments );
         $output .= $this->named_args( $segments );
         if( $this->has_content( $segments ) ) {
-            $content = $this->process_line( $this->find_content( $segments ) );
-            if( $content != '' )
-                $output .= '>' . $content . '</' . $segments[1] . '>';
+            $this->emit( $output );
+            $content = $this->find_content( $segments );
+            if( $content != '' ) {
+                $this->emit( '>' );
+                $this->process_line( $content );
+                $this->emit( '</' . $segments[1] . '>' );
+            }
             else
-                $output .= ' />';
+                $this->emit( ' />' );
         }
         else {
             $output .= '>';
+            $this->emit( $output );
             $this->stack_tag( $segments[1], $output );
         }
-        return $output;
+    }
+
+    private function br_tag( &$segments )
+    {
+        if( $this->has_content( $segments ) ) {
+            $this->process_line( $this->find_content( $segments ) );
+        }
+        $this->emit( "<br />" );
     }
 
     private function div_class( $line )
     {
         $segments = $this->segment( $line );
         if( count( $segments ) >= 3 && $segments[count($segments)-2] == ':' ) {
-            return "<span class={$segments[1]}>" . $this->process_line( $segments[count($segments)-1] ) . "</span>";
+            $this->emit( "<span class={$segments[1]}>" );
+            $this->process_line( $segments[count($segments)-1] );
+            $this->emit( "</span>" );
         }
-        $output = "<div class={$segments[1]}>";
-        $this->stack_tag( 'div', $output );
-        return $output;
+        else {
+            $output = "<div class={$segments[1]}>";
+            $this->stack_tag( 'div', $output );
+            $this->emit( $output );
+        }
     }
 
     private function call_func( $fname, $optional_separator, $parameter_string )
@@ -179,6 +201,13 @@ abstract class HtmloCore
                 $sub = trim( $sub );
         }
 
+        $result = $this->invoke_call_func( $fname, $parameters );
+        if( isset( $result ) && $result != '' )
+            $this->emit( $result );
+    }
+
+    private function invoke_call_func( $fname, $parameters )
+    {
         switch( count( $parameters ) ) {
             case 0: return $fname();
             case 1: return $fname( $parameters[0] );
@@ -216,15 +245,6 @@ abstract class HtmloCore
             return True;
         }
         return False;
-    }
-
-    private function br_tag( &$segments )
-    {
-        $content = '';
-        if( $this->has_content( $segments ) ) {
-            $content = $this->process_line( $this->find_content( $segments ) );
-        }
-        return $content . "<br />";
     }
 
     private function tag_specific_args( &$segments )
