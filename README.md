@@ -362,9 +362,19 @@ will effectively call the PHP function:
 
     my_func( $i, $j )
 
-By default, the function's parameters are separated by spaces.  To pass a
-string containing spaces, it is necessary to specify an alternative separator
-character.  This can be specified immediately after the `.!` token:
+By default, if the parameter section contains commas (`,`) the function's parameters
+are separated by commas, otherwise the parameters are separated by spaces.
+
+The following will use space separated parameters, yielding 4 parameters:
+
+    .! my_func string 1 string 2
+
+The following will use comma separated parameters, yielding 2 parameters:
+
+    .! my_func string 1, string 2
+
+An alternative separator
+character can be specified immediately after the `.!` token:
 
     .!! my_func This is a string argument to the function
 

@@ -167,6 +167,8 @@ abstract class HtmloCore
 
     private function call_func( $fname, $optional_separator, $parameter_string )
     {
+        if( $optional_separator == '' && strpos( $parameter_string, ',' ) !== false )
+            $optional_separator = ',';
 
         $parameters = array();
         if( $optional_separator == '' )
@@ -175,7 +177,6 @@ abstract class HtmloCore
             $parameters = explode( $optional_separator, $parameter_string );
             foreach( $parameters as &$sub )
                 $sub = trim( $sub );
-
         }
 
         switch( count( $parameters ) ) {

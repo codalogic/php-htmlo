@@ -88,6 +88,7 @@ checkrtrim( htmls( "Start\n.!wibble2 $in $out\nEnd" ), "Start\nwobblehuffpuff\nE
 checkrtrim( htmls( "Start\n.!wibble3 $in $out f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
 checkrtrim( htmls( "Start\n.!wibble4 $in $out f3 f4\nEnd" ), "Start\nwobblehuffpufff3f4\nEnd" );
 checkrtrim( htmls( "Start\n.! wibble5 $in $out f3 f4 f5\nEnd" ), "Start\nwobblehuffpufff3f4f5\nEnd" );
+checkrtrim( htmls( "Start\n.!wibble2 This is a string, 2 \nEnd" ), "Start\nwobbleThis is a string2\nEnd" );
 checkrtrim( htmls( "Start\n.!!wibble1 $in\nEnd" ), "Start\nwobblehuff\nEnd" );
 checkrtrim( htmls( "Start\n.!!wibble2 $in ! $out\nEnd" ), "Start\nwobblehuffpuff\nEnd" );
 checkrtrim( htmls( "Start\n.!!wibble3 $in ! $out ! f3\nEnd" ), "Start\nwobblehuffpufff3\nEnd" );
